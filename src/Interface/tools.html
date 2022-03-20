@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="../Assets/Material/Lite/material.min.css" />
+    <link rel="stylesheet" href="../Assets/Styles/global.css" />
+    <script src="../Assets/Material/Lite/material.min.js"></script>
+</head>
+<body>
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">Will You Mod Your Snail</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation. We hide it in small screens. -->
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="upload.html"
+                        ><span class="material-icons"> file_upload </span>
+                        Upload</a
+                    >
+                    <a class="mdl-navigation__link" href="mods.html"
+                        ><span class="material-icons"> list </span> Mods</a
+                    >
+                    <a class="mdl-navigation__link" href="tools.html"
+                        ><span class="material-icons"> build </span> Tools</a
+                    >
+                    <a class="mdl-navigation__link" href="settings.html"
+                        ><span class="material-icons"> settings </span>
+                        Settings</a
+                    >
+                </nav>
+            </div>
+        </header>
+        <main class="mdl-layout__content">
+            <div class="page-content">
+                <h3><span class="material-icons"> build </span> Tools</h3>
+                <hr />
+                <button
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
+                    id="crashButton"
+                >
+                    Trigger Crash
+                </button>
+            </div>
+        </main>
+    </div>
+</body>
