@@ -1,114 +1,98 @@
 <!DOCTYPE html>
-<head>
-    <link rel="stylesheet" href="../Assets/Material/Lite/material.min.css" />
-    <link rel="stylesheet" href="../Assets/Styles/global.css" />
-    <script src="../Assets/Material/Lite/material.min.js"></script>
-</head>
-<body>
-    <!-- Always shows a header, even in smaller screens. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <!-- Title -->
-                <span class="mdl-layout-title">Will You Mod Your Snail</span>
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
-                <!-- Navigation. We hide it in small screens. -->
-                <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="upload.html"
-                        ><span class="material-icons"> file_upload </span>
-                        Upload</a
-                    >
-                    <a class="mdl-navigation__link" href="mods.html"
-                        ><span class="material-icons"> list </span> Mods</a
-                    >
-                    <a class="mdl-navigation__link" href="tools.html"
-                        ><span class="material-icons"> build </span> Tools</a
-                    >
-                    <a class="mdl-navigation__link" href="settings.html"
-                        ><span class="material-icons"> settings </span>
-                        Settings</a
-                    >
-                </nav>
-            </div>
-        </header>
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                <h3><span class="material-icons"> list </span> Mods</h3>
-                <hr />
-                <!-- MDL Spinner Component -->
-                <div class="mdl-spinner mdl-js-spinner is-active" hidden></div>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-                <div id="noModsFound" hidden>
-                    <h5>No mods found. You should upload one :)</h5>
-                </div>
+        <!-- Bootstrap CSS -->
+        <link
+            href="../Assets/Bootstrap/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+        />
+        <script
+            src="../Assets/FontAwesome/088b6a2344.js"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <button
+            id="syncingModalOpener"
+            hidden
+            data-bs-toggle="modal"
+            data-bs-target="#syncingModal"
+        ></button>
+        <center>
+            <h1>
+                <i class="fas fa-puzzle-piece"></i>
+                <b wys-localizationkey="mods.title">Mods</b>
+            </h1>
+            <h6 wys-localizationkey="mods.description">
+                Manage installed mods.
+            </h6>
+            <button
+                type="button"
+                id="refreshModsButton"
+                disabled
+                class="btn btn-primary"
+            >
+                <i class="fas fa-sync"></i>
+                <blank wys-localizationkey="mods.refreshbutton">Refresh</blank>
+            </button>
+            <hr />
+            <div id="modList"></div>
+        </center>
 
-                <!-- Wide card with share menu button -->
-                <style>
-                    .demo-card-wide.mdl-card {
-                        width: 512px;
-                        text-align: left;
-                    }
-                    .demo-card-wide > .mdl-card__title {
-                        color: #fff;
-                        height: 176px;
-                        background: url("../Assets/Images/defaultModImage.png")
-                            center / cover;
-                    }
-                    .mdl-card__title-text {
-                        background: rgb(0, 0, 0);
-                        background: linear-gradient(
-                            0deg,
-                            rgba(0, 0, 0, 1) 0%,
-                            rgba(0, 0, 0, 1) 0%,
-                            rgba(255, 255, 255, 0) 100%
-                        );
-                    }
-                    .demo-card-wide > .mdl-card__menu {
-                        color: #fff;
-                    }
-                </style>
-
-                <center>
-                    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-                        <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">WYMYS-Core</h2>
-                        </div>
-                        <div class="mdl-card__supporting-text">
-                            <p>Author: The0Show • v1.0.0</p>
-                            The core mod for Will You Mod Your Snail. Provides
-                            helpful features for mod developers and users, and
-                            makes nessasary adjustments to the game.
-                        </div>
-                        <div class="mdl-card__actions mdl-card--border">
-                            <a
-                                href="https://github.com/WillYouModYourSnail/WYMYS-Core"
-                                target="_blank"
-                                ><div
-                                    id="sourceCode"
-                                    class="icon material-icons"
-                                >
-                                    source
-                                </div>
-
-                                <div class="mdl-tooltip" for="sourceCode">
-                                    View source code
-                                </div></a
-                            >
-                            <a
-                                href="https://github.com/WillYouModYourSnail/"
-                                target="_blank"
-                                ><div id="tt4" class="icon material-icons">
-                                    link
-                                </div>
-                                <div class="mdl-tooltip" for="tt4">
-                                    View website
-                                </div></a
-                            >
-                        </div>
+        <!-- Mod Delete Modal -->
+        <div
+            class="modal"
+            id="modDeleteModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="modDeleteModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modDeleteModalLabel">
+                            Are you sure?
+                        </h5>
                     </div>
-                </center>
+                    <div class="modal-body">
+                        Are you sure you want to delete this mod? It will be
+                        removed when you sync.
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-bs-dismiss="modal"
+                            id="deleteModButton"
+                            modIndex=""
+                        >
+                            Yes
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            No
+                        </button>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
-</body>
+        </div>
+
+        <!-- Bootstrap JavaScript -->
+        <script
+            src="../Assets/Bootstrap/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"
+        ></script>
+    </body>
+</html>

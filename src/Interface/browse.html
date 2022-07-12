@@ -26,22 +26,17 @@
         ></button>
         <center>
             <h1>
-                <i class="fas fa-cog"></i>
-                <b wys-localizationkey="settings.title">Settings</b>
+                <i class="fas fa-search"></i>
+                <b wys-localizationkey="browse.title">Browse</b>
             </h1>
-            <h6 wys-localizationkey="settings.description">Adjust settings!</h6>
+            <h5 wys-localizationkey="browse.description">
+                The browse page will allow users to browse through verified &
+                official mods.
+            </h5>
             <hr />
-
-            <ul
-                class="nav nav-tabs justify-content-center"
-                id="settingsTab"
-                role="tablist"
-            ></ul>
-            <div
-                class="tab-content"
-                id="settingsTabContent"
-                style="text-align: left; margin: 10px"
-            ></div>
+            <h6 wys-localizationkey="browse.comingsoon">
+                The browse page will be made available in a future update.
+            </h6>
         </center>
 
         <!-- Bootstrap JavaScript -->
@@ -50,18 +45,5 @@
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"
         ></script>
-
-        <script>
-            function changeSetting(setting) {
-                if (setting.checked !== undefined)
-                    window.localStorage.setItem(setting.id, setting.checked);
-
-                if (
-                    setting.value !== undefined &&
-                    setting.checked === undefined
-                )
-                    window.localStorage.setItem(setting.id, setting.value);
-            }
-        </script>
     </body>
 </html>

@@ -1,4 +1,4 @@
-const DiffMatchPatch = require("diff-match-patch");
+const { bpsCreatePromise, bpsApplyPromise } = require("flips-wasm/lib/bps");
 
 /**
  * Handles patching files.
@@ -8,45 +8,30 @@ class Patcher {
     /**
      * Initalizes a {@link Patcher}.
      */
-    constructor() {
-        this.dmp = new DiffMatchPatch();
-    }
+    constructor() {}
 
     /**
      * Creates patch output that can be put into a file.
      * @param {Buffer} originalFile
      * @param {Buffer} modifiedFile
-     * @returns {object}
+     * @returns {Uint8Array}
      */
-    createPatch(originalFile, modifiedFile) {
-        const diff = this.dmp.diff_main(
-            originalFile.toString("utf8"),
-            modifiedFile.toString("utf8")
-        );
+    async createPatch(originalFile, modifiedFile) {
+        const diff = await bpsCreatePromise(originalFile, modifiedFile);
 
-        const patch = this.dmp.patch_make(diff);
-
-        return this.dmp.patch_toText(patch);
+        return diff;
     }
 
     /**
      * Patches a file.
      * @param {any} patchString The patch data.
      * @param {Buffer} inputFile The input file to be patched.
-     * @returns {string} The patch result. This only handles doing the patching, not the saving of the patch.
+     * @returns {Uint8Array} The patch result. This only handles doing the patching, not the saving of the patch.
      */
-    patchFile(patchString, inputFile) {
-        const patch = this.dmp.patch_fromText(patchString.toString());
-        const [patchedText, result] = this.dmp.patch_apply(
-            patch,
-            inputFile.toString("utf8")
-        );
+    async patchFile(patchString, inputFile) {
+        const patch = await bpsApplyPromise(patchString, inputFile);
 
-        if (result[0]) {
-            return patchedText;
-        } else {
-            return "Error";
-        }
+        return patch;
     }
 }
 

@@ -1,0 +1,57 @@
+name: Bug Report
+description: File a bug report
+labels: ["bug"]
+body:
+    - type: textarea
+      id: what-happened
+      attributes:
+          label: What's the bug?
+          description: Also be sure to include what you expected to happen.
+          placeholder: Tell us what you see!
+          value: "Squid hacked my computer..."
+      validations:
+          required: true
+    - type: dropdown
+      id: version
+      attributes:
+          label: Version
+          description: What version are you using?
+          If your version isn't listed here, then it is no longer recieving support.
+          options:
+              - v0.0.1
+      validations:
+          required: true
+    - type: dropdown
+      id: operating-system
+      attributes:
+          label: What version of Windows are you experiencing this problem on?
+          multiple: true
+          options:
+              - Windows Vista or earlier
+              - Windows 7
+              - Windows 8
+              - Windows 10
+              - Windows 11
+              - MacOS (via Wine)
+              - Linux (via Wine)
+      validations:
+          required: true
+    - type: textarea
+      id: logs
+      attributes:
+          label: Relevant log output
+          description: Please copy and paste any relevant log output. You can easily retrieve this by pressing `Shift` + `F8`.
+          It will be automatically displayed in shell, there's no need to include backticks (\`).
+          render: shell
+    - type: checkboxes
+      id: checklist
+      attributes:
+          label: Checklist
+          description: Make sure you've completed the following before submitting.
+          options:
+              - label: I've explained the bug with as much detail as possible.
+                required: true
+              - label: I've specified the version of my copy of WYMYS, and my Operating System.
+                required: true
+              - label: I've included relevant log info, if any.
+                required: true

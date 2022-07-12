@@ -1,48 +1,179 @@
 <!DOCTYPE html>
-<head>
-    <link rel="stylesheet" href="../Assets/Material/Lite/material.min.css" />
-    <link rel="stylesheet" href="../Assets/Styles/global.css" />
-    <script src="../Assets/Material/Lite/material.min.js"></script>
-</head>
-<body>
-    <!-- Always shows a header, even in smaller screens. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <!-- Title -->
-                <span class="mdl-layout-title">Will You Mod Your Snail</span>
-                <!-- Add spacer, to align navigation to the right -->
-                <div class="mdl-layout-spacer"></div>
-                <!-- Navigation. We hide it in small screens. -->
-                <nav class="mdl-navigation">
-                    <a class="mdl-navigation__link" href="upload.html"
-                        ><span class="material-icons"> file_upload </span>
-                        Upload</a
-                    >
-                    <a class="mdl-navigation__link" href="mods.html"
-                        ><span class="material-icons"> list </span> Mods</a
-                    >
-                    <a class="mdl-navigation__link" href="tools.html"
-                        ><span class="material-icons"> build </span> Tools</a
-                    >
-                    <a class="mdl-navigation__link" href="settings.html"
-                        ><span class="material-icons"> settings </span>
-                        Settings</a
-                    >
-                </nav>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- Bootstrap CSS -->
+        <link
+            href="../Assets/Bootstrap/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+            crossorigin="anonymous"
+        />
+        <script
+            src="../Assets/FontAwesome/088b6a2344.js"
+            crossorigin="anonymous"
+        ></script>
+    </head>
+    <body>
+        <button
+            id="syncingModalOpener"
+            hidden
+            data-bs-toggle="modal"
+            data-bs-target="#syncingModal"
+        ></button>
+        <center>
+            <h1>
+                <i class="fas fa-wrench"></i>
+                <b wys-localizationkey="tools.title">Tools</b>
+            </h1>
+            <h6 wys-localizationkey="tools.description">
+                Something going wrong? Not to worry! Use these tools to help!
+            </h6>
+            <hr />
+            <div class="mb-3" style="margin: 5px">
+                <input
+                    class="form-control"
+                    list="toolListOptions"
+                    id="toolList"
+                    placeholder="Type to select a tool..."
+                />
+                <datalist id="toolListOptions"></datalist>
             </div>
-        </header>
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                <h3><span class="material-icons"> build </span> Tools</h3>
-                <hr />
-                <button
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                    id="crashButton"
-                >
-                    Trigger Crash
-                </button>
+            <h6 id="toolDesc">Select a tool first :)</h6>
+            <button
+                type="button"
+                id="runToolButton"
+                disabled
+                class="btn btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#dangerModal"
+                onclick="document.getElementById('body').innerHTML = `Please confirm the tool you want to use:<br /><b>${document.getElementById('toolDesc').innerText}</b><br /><br />If this is correct, and you're 101% sure that you want this action to be performed, press the red button below.<br />After the tool is ran, the config will be synced and the application will restart.`"
+            >
+                <i class="fas fa-exclamation-triangle"></i> Use Tool
+            </button>
+        </center>
+
+        <!-- Danger Modal -->
+        <div
+            class="modal"
+            id="dangerModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="dangerModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="dangerModalLabel">
+                            Are you sure?
+                        </h5>
+                    </div>
+                    <div class="modal-body" id="body"></div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            data-bs-dismiss="modal"
+                            class="btn btn-secondary"
+                        >
+                            Nevermind, take me back
+                        </button>
+                        <button
+                            type="button"
+                            id="confirmRunToolButton"
+                            data-bs-dismiss="modal"
+                            class="btn btn-danger"
+                        >
+                            I understand, use the tool
+                        </button>
+                    </div>
+                </div>
             </div>
-        </main>
-    </div>
-</body>
+        </div>
+
+        <!-- Bootstrap JavaScript -->
+        <script
+            src="../Assets/Bootstrap/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"
+        ></script>
+
+        <script>
+            let toolList = document.getElementById("toolListOptions");
+
+            const tools = [
+                {
+                    name: "Remove all Mods",
+                    desc: "Removes all mods and their cache entries.",
+                },
+                {
+                    name: "Reinstall BepInEx",
+                    desc: "Removes and reinstalls BepInEx. Your mods will stay intact.",
+                },
+            ];
+
+            function sortArray(x, y) {
+                if (x.name < y.name) {
+                    return -1;
+                }
+                if (x.name > y.name) {
+                    return 1;
+                }
+                return 0;
+            }
+
+            const sortedTools = tools.sort(sortArray);
+
+            for (let index = 0; index < sortedTools.length; index++) {
+                const tool = sortedTools[index];
+
+                let option = document.createElement("option");
+                option.value = tool.name;
+
+                toolList.append(option);
+            }
+
+            document
+                .getElementById("toolList")
+                .addEventListener("change", async () => {
+                    const toolNames = await tools.map(function (item) {
+                        return item["name"];
+                    });
+
+                    if (
+                        toolNames.includes(
+                            document.getElementById("toolList").value
+                        )
+                    ) {
+                        document.getElementById(
+                            "runToolButton"
+                        ).disabled = false;
+                        document.getElementById("toolDesc").innerText = `${
+                            tools[
+                                toolNames.indexOf(
+                                    document.getElementById("toolList").value
+                                )
+                            ].name
+                        } - ${
+                            tools[
+                                toolNames.indexOf(
+                                    document.getElementById("toolList").value
+                                )
+                            ].desc
+                        }`;
+                    } else {
+                        document.getElementById(
+                            "runToolButton"
+                        ).disabled = true;
+                        document.getElementById(
+                            "toolDesc"
+                        ).innerText = `I can't describe something that isn't a tool, ya know.`;
+                    }
+                });
+        </script>
+    </body>
+</html>
