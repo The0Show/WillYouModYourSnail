@@ -41,7 +41,7 @@ body:
       attributes:
           label: Relevant log output
           description: "Please copy and paste any relevant log output. You can easily retrieve this by pressing `Shift` + `F8`.
-          It will be automatically displayed in shell, there's no need to include backticks (\`)."
+          It will be automatically displayed in shell, there's no need to include backticks."
           render: shell
     - type: checkboxes
       id: checklist
