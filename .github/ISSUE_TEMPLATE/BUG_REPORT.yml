@@ -25,7 +25,7 @@ body:
       id: operating-system
       attributes:
           label: What version of Windows are you experiencing this problem on?
-          multiple: true
+          multiple: false
           options:
               - Windows Vista or earlier
               - Windows 7
