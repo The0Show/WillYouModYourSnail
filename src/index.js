@@ -10,6 +10,7 @@ const {
 const { openNewGitHubIssue, debugInfo } = require("electron-util");
 const fs = require("fs-extra");
 const unhandled = require("electron-unhandled");
+const { createLogger, format, transports } = require("winston");
 
 // function handleStartupEvent() {
 //     if (process.platform !== "win32") {
@@ -52,17 +53,50 @@ const unhandled = require("electron-unhandled");
 //     app.exit();
 // }
 
-unhandled({
-    showDialog: true,
-    reportButton: (error) => {
-        openNewGitHubIssue({
-            user: "WillYouModYourSnail",
-            repo: "WYMYS-Loader",
-            title: `${error.message}`,
-            body: `${debugInfo()}\n---------------------------\n${error.stack}`,
-        });
-    },
+const levels = ["error", "warn", "info", "http", "verbose", "debug", "silly"];
+
+const consoleFormat = format.printf(({ level, message, label, timestamp }) => {
+    return `[${level}] ${message}`;
 });
+
+const logger = createLogger({
+    level: "info",
+    format: format.json(),
+    defaultMeta: { service: "user-service" },
+    transports: [
+        new transports.Console({
+            format: consoleFormat,
+        }),
+    ],
+});
+
+/**
+ *
+ * @param {Error} error The thrown error. Can also be null, in which case the user will be given a blank bug report.
+ */
+async function openBugReporter(error) {
+    shell.openExternal(
+        `https://github.com/The0Show/WYMYS-Manager/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
+            error !== null ? `&what-happened=${error.stack}` : ""
+        }`
+    );
+}
+
+async function catchCrash(error) {
+    const oopsDialog = await dialog.showMessageBox(null, {
+        buttons: ["Relaunch", "Quit"],
+        message:
+            "Will You Mod Your Snail has crashed. We blame Squid. Please consider reporting this error so we can fix it :)",
+        title: "Oh no...",
+        type: "error",
+        checkboxLabel: "Open the issue reporter to report this crash",
+    });
+
+    if (oopsDialog.checkboxChecked) await openBugReporter(error);
+
+    if (oopsDialog.response === 0) app.relaunch();
+    app.quit();
+}
 
 /**
  * @type {BrowserWindow}
@@ -80,6 +114,13 @@ function parseSceneDir(sceneName) {
 
 app.on("ready", () => {
     const appData = `${app.getPath("appData")}\\wymys-loader`;
+
+    logger.add(
+        new transports.File({
+            filename: `${appData}\\.log`,
+            format: consoleFormat,
+        })
+    );
 
     if (!fs.existsSync(`${appData}\\ModManifests`))
         fs.mkdirSync(`${appData}\\ModManifests`);
@@ -135,8 +176,16 @@ app.on("ready", () => {
     // This allows _blank to open in the user's browser rather than a new Electron window.
     mainWindow.webContents.on("new-window", function (e, url) {
         e.preventDefault();
-        require("electron").shell.openExternal(url);
+        shell.openExternal(url);
     });
+
+    mainWindow.webContents.on("console-message", (e, level, message) => {
+        logger.log(levels[level], message);
+    });
+
+    app.on("render-process-gone", (ev, web, details) =>
+        catchCrash(new Error(details.reason))
+    );
 });
 
 app.on("browser-window-focus", () => {
@@ -154,18 +203,18 @@ app.on("browser-window-focus", () => {
     });
 
     globalShortcut.register("F8", () => {
-        require("electron").shell.openExternal(
+        shell.openExternal(
             "https://github.com/WillYouModYourSnail/WYMYS-Manager/issues/new/choose"
         );
+    });
+
+    globalShortcut.register("Shift+F8", () => {
+        shell.showItemInFolder(`${app.getPath("appData")}\\wymys-loader\\.log`);
     });
 });
 
 app.on("browser-window-blur", () => {
     globalShortcut.unregisterAll();
-});
-
-ipcMain.on("triggerCrash", (event, err) => {
-    throw err;
 });
 
 ipcMain.handle("appDataReq", (event, args) => {
@@ -195,3 +244,8 @@ ipcMain.handle("uploadModFile", async (event, args) => {
 
     return file.filePaths[0];
 });
+
+ipcMain.on("handleCrash", (event, err) => catchCrash(err));
+
+process.on("uncaughtException", (err) => catchCrash(err));
+process.on("unhandledRejection", (err) => catchCrash(err));

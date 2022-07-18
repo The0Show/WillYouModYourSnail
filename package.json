@@ -21,31 +21,7 @@
     },
     "license": "MIT",
     "config": {
-        "forge": {
-            "packagerConfig": {},
-            "makers": [
-                {
-                    "name": "@electron-forge/maker-squirrel",
-                    "config": {
-                        "name": "wymys_loader"
-                    }
-                },
-                {
-                    "name": "@electron-forge/maker-zip",
-                    "platforms": [
-                        "darwin"
-                    ]
-                },
-                {
-                    "name": "@electron-forge/maker-deb",
-                    "config": {}
-                },
-                {
-                    "name": "@electron-forge/maker-rpm",
-                    "config": {}
-                }
-            ]
-        }
+        "forge": "./forge.config.js"
     },
     "dependencies": {
         "axios": "^0.26.1",
@@ -57,13 +33,15 @@
         "flips-wasm": "^0.0.2",
         "fs-extra": "^10.0.1",
         "node-stream-zip": "^1.15.0",
-        "typescript": "^4.6.3"
+        "typescript": "^4.6.3",
+        "winston": "^3.8.1"
     },
     "devDependencies": {
         "@electron-forge/cli": "^6.0.0-beta.63",
         "@electron-forge/maker-deb": "^6.0.0-beta.63",
         "@electron-forge/maker-rpm": "^6.0.0-beta.63",
         "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+        "@electron-forge/maker-wix": "^6.0.0-beta.64",
         "@electron-forge/maker-zip": "^6.0.0-beta.63",
         "electron": "17.1.2"
     }

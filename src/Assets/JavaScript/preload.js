@@ -6,10 +6,9 @@ const UploadPagePreloads = require("./preloads/UploadPagePreloads");
 const unhandled = require("electron-unhandled");
 const SettingsPagePreloads = require("./preloads/SettingsPagePreloads");
 const OnboardingPrelaods = require("./preloads/OnboardingPreloads");
+const { ipcRenderer } = require("electron");
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (window.location.href.includes("init")) return;
-
     try {
         // load the global preloads
         new GlobalPreload();
@@ -23,18 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.location.href.includes("onboarding.html"))
             new OnboardingPrelaods();
     } catch (err) {
-        unhandled.logError(err, {
-            showDialog: true,
-            reportButton: (error) => {
-                openNewGitHubIssue({
-                    user: "WillYouModYourSnail",
-                    repo: "WYMYS-Loader",
-                    title: `${error.message}`,
-                    body: `${debugInfo()}\n---------------------------\n${
-                        error.stack
-                    }`,
-                });
-            },
-        });
+        ipcRenderer.send("handleCrash", err);
     }
 });

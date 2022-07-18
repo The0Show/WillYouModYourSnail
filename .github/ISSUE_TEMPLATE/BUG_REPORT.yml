@@ -8,7 +8,6 @@ body:
           label: What's the bug?
           description: Also be sure to include what you expected to happen.
           placeholder: Tell us what you see!
-          value: "Squid hacked my computer..."
       validations:
           required: true
     - type: dropdown
@@ -40,7 +39,7 @@ body:
       id: logs
       attributes:
           label: Relevant log output
-          description: "Please copy and paste any relevant log output. You can easily retrieve this by pressing `Shift` + `F8`.
+          description: "Please copy and paste any relevant log output. You can easily retrieve this by pressing `Shift` + `F8`, and pasting the contents of the `.log` file.
           It will be automatically displayed in shell, there's no need to include backticks."
           render: shell
     - type: checkboxes
@@ -51,7 +50,10 @@ body:
           options:
               - label: I've explained the bug with as much detail as possible.
                 required: true
-              - label: I've specified the version of my copy of WYMYS, and my Operating System.
+              - label: I've specified the version of WYMYS I'm using, and my Operating System.
                 required: true
               - label: I've included relevant log info, if any.
                 required: true
+    - type: markdown
+      attributes:
+        value: "## Currently, GitHub Forms does not have an option to submit images or video. If you'd like to share images or videos of the issue, please provide them in a comment on your issue after submitting."

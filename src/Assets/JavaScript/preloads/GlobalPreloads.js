@@ -5,7 +5,11 @@ class GlobalPreload {
      * preloads that should be  e v e r y w h e r e
      */
     constructor() {
-        if (!window.location.href.includes("onboarding")) this.injectHeader();
+        if (
+            !window.location.href.includes("onboarding") &&
+            !window.location.href.includes("init")
+        )
+            this.injectHeader();
         this.injectModals();
         this.localizeInnerText();
         this.setupDefaultSettingValuesIfNeeded();
