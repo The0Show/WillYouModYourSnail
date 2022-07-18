@@ -21,7 +21,7 @@ class GlobalPreload {
     injectHeader() {
         const headerPages = [
             ["Mods", "header.mods", "fa-puzzle-piece", "mods.html"],
-            ["Levels", "header.levels", "fa-ruler-combined", "levels.html"],
+            //["Levels", "header.levels", "fa-ruler-combined", "levels.html"],
             ["Upload", "header.upload", "fa-upload", "upload.html"],
             ["Browse", "header.browse", "fa-search", "browse.html"],
             ["Tools", "header.tools", "fa-wrench", "tools.html"],

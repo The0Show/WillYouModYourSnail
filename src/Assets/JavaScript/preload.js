@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.location.href.includes("onboarding.html"))
             new OnboardingPrelaods();
     } catch (err) {
+        // try to catch crashes
         ipcRenderer.send("handleCrash", err);
     }
 });

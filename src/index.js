@@ -72,16 +72,20 @@ const logger = createLogger({
 
 /**
  *
- * @param {Error} error The thrown error. Can also be null, in which case the user will be given a blank bug report.
+ * @param {Error | null} error The thrown error. Can also be null, in which case the user will be given a blank bug report.
  */
 async function openBugReporter(error) {
     shell.openExternal(
-        `https://github.com/The0Show/WYMYS-Manager/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
+        `https://github.com/The0Show/WillYouModYourSnail/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
             error !== null ? `&what-happened=${error.stack}` : ""
         }`
     );
 }
 
+/**
+ * Catch a crash.
+ * @param {Error | null} error
+ */
 async function catchCrash(error) {
     const oopsDialog = await dialog.showMessageBox(null, {
         buttons: ["Relaunch", "Quit"],
@@ -136,6 +140,9 @@ app.on("ready", () => {
             preload: `${__dirname}/Assets/JavaScript/preload.js`,
         },
     });
+
+    // By default, Electron has it's own application menu. We don't want it to appear in
+    // the packaged app.
     Menu.setApplicationMenu(app.isPackaged ? null : Menu.getApplicationMenu());
 
     const client = require("discord-rich-presence")("967088639886655568");
@@ -179,6 +186,7 @@ app.on("ready", () => {
         shell.openExternal(url);
     });
 
+    // This is me attempting to get console messages and crashes from the window
     mainWindow.webContents.on("console-message", (e, level, message) => {
         logger.log(levels[level], message);
     });
@@ -188,6 +196,10 @@ app.on("ready", () => {
     );
 });
 
+// I learned this on StackOverflow (of course), but this fixes the problem of
+// shortcuts working when the user isn't focused on the app, by registering the
+// shortcuts when the window is focused, and unregistering them when the window
+// is unfocused.
 app.on("browser-window-focus", () => {
     globalShortcut.register("Control+R", () => {
         app.relaunch();
@@ -204,7 +216,7 @@ app.on("browser-window-focus", () => {
 
     globalShortcut.register("F8", () => {
         shell.openExternal(
-            "https://github.com/WillYouModYourSnail/WYMYS-Manager/issues/new/choose"
+            "https://github.com/The0Show/WillYouModYourSnail/issues/new/choose"
         );
     });
 
@@ -245,6 +257,7 @@ ipcMain.handle("uploadModFile", async (event, args) => {
     return file.filePaths[0];
 });
 
+// Again, attemping to catch crashes (see Assets/JavaScript/preload.js)
 ipcMain.on("handleCrash", (event, err) => catchCrash(err));
 
 process.on("uncaughtException", (err) => catchCrash(err));
