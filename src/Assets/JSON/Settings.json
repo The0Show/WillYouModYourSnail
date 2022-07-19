@@ -14,14 +14,6 @@
                     {
                         "value": "en_US",
                         "name": "English"
-                    },
-                    {
-                        "value": "es_ES",
-                        "name": "Español"
-                    },
-                    {
-                        "value": "shake_PEAR",
-                        "name": "Shakespearean"
                     }
                 ],
                 "disabled": false

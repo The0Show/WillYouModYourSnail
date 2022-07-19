@@ -74,6 +74,7 @@ class UploadPagePreloads {
                             }
 
                             wysmodReader.parsedFileData.metadata.enabled = true;
+                            wysmodReader.parsedFileData.metadata.isCoreMod = false;
                             writeJSONSync(
                                 `${this.appData}\\Mod Info\\${wysmodReader.parsedFileData.metadata.id}`,
                                 wysmodReader.parsedFileData.metadata
@@ -81,8 +82,26 @@ class UploadPagePreloads {
 
                             writeFileSync(
                                 `${this.appData}\\Mod Binaries\\${wysmodReader.parsedFileData.metadata.id}`,
-                                wysmodReader.parsedFileData.file
+                                wysmodReader.parsedFileData.modBinary
                             );
+
+                            if (
+                                wysmodReader.parsedFileData.modCover
+                                    .byteLength > 0
+                            )
+                                writeFileSync(
+                                    `${this.appData}\\Mod Covers\\${wysmodReader.parsedFileData.metadata.id}`,
+                                    wysmodReader.parsedFileData.modCover
+                                );
+
+                            if (
+                                wysmodReader.parsedFileData.modDebugger
+                                    .byteLength > 0
+                            )
+                                writeFileSync(
+                                    `${this.appData}\\Mod Debuggers\\${wysmodReader.parsedFileData.metadata.id}`,
+                                    wysmodReader.parsedFileData.modDebugger
+                                );
 
                             if (modAlreadyExists) {
                                 this.sendUploadResponse(
@@ -108,107 +127,9 @@ class UploadPagePreloads {
                             "danger"
                         );
                     });
-            } else if (file.name.endsWith(".dll")) {
+            } else if (file.name.endsWith(".zip")) {
                 try {
-                    let version;
-
-                    exec(
-                        `wmic datafile where name='${file.path
-                            .toLowerCase()
-                            .replaceAll("\\", "\\\\")}' get Version`,
-                        function (err, stdout, stderr) {
-                            version = stdout;
-                        }
-                    );
-
-                    setTimeout(() => {
-                        if (version) {
-                            var modAlreadyExists = false;
-
-                            if (
-                                existsSync(
-                                    `${
-                                        this.appData
-                                    }\\Mod Info\\dllimport.willyoumodyoursnail.${file.name
-                                        .replace(".dll", "")
-                                        .toLowerCase()}`
-                                ) ||
-                                existsSync(
-                                    `${
-                                        this.appData
-                                    }\\Mod Binaries\\dllimport.willyoumodyoursnail.${file.name
-                                        .replace(".dll", "")
-                                        .toLowerCase()}`
-                                )
-                            ) {
-                                modAlreadyExists =
-                                    readJSONSync(
-                                        `${
-                                            this.appData
-                                        }\\Mod Info\\dllimport.willyoumodyoursnail.${file.name
-                                            .replace(".dll", "")
-                                            .toLowerCase()}`
-                                    ).version ===
-                                    `${version.split("\n")[1].split(".")[0]}.${
-                                        version.split("\n")[1].split(".")[1]
-                                    }.${version.split("\n")[1].split(".")[2]}`;
-                            }
-
-                            writeJSONSync(
-                                `${
-                                    this.appData
-                                }\\Mod Info\\dllimport.willyoumodyoursnail.${file.name
-                                    .replace(".dll", "")
-                                    .toLowerCase()}`,
-                                {
-                                    id: `dllimport.willyoumodyoursnail.${file.name
-                                        .replace(".dll", "")
-                                        .toLowerCase()}`,
-                                    name: file.name.replace(".dll", ""),
-                                    version: `${
-                                        version.split("\n")[1].split(".")[0]
-                                    }.${version.split("\n")[1].split(".")[1]}.${
-                                        version.split("\n")[1].split(".")[2]
-                                    }`,
-                                    authors: [],
-                                    description: "",
-                                    dependencies: [],
-                                    enabled: true,
-                                }
-                            );
-
-                            copyFileSync(
-                                file.path,
-                                `${
-                                    this.appData
-                                }\\Mod Binaries\\dllimport.willyoumodyoursnail.${file.name
-                                    .replace(".dll", "")
-                                    .toLowerCase()}`
-                            );
-
-                            if (modAlreadyExists) {
-                                this.sendUploadResponse(
-                                    `Mod with same ID and version already exists, replaced with ${
-                                        file.name
-                                    } v${
-                                        version.split("\n")[1].split(".")[0]
-                                    }.${version.split("\n")[1].split(".")[1]}.${
-                                        version.split("\n")[1].split(".")[2]
-                                    }!`,
-                                    "warning"
-                                );
-                            } else {
-                                this.sendUploadResponse(
-                                    `Successfully installed ${file.name} v${
-                                        version.split("\n")[1].split(".")[0]
-                                    }.${version.split("\n")[1].split(".")[1]}.${
-                                        version.split("\n")[1].split(".")[2]
-                                    }!`,
-                                    "success"
-                                );
-                            }
-                        }
-                    }, 1000);
+                    throw new Error("put zip code here");
                 } catch (err) {
                     this.sendUploadResponse(
                         `Install failed!<br>${err.message}`,

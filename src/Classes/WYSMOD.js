@@ -25,6 +25,10 @@ class WYSMOD {
         return this.rawFileData.toString("utf8", start, start + length);
     }
 
+    readSegment(start, length) {
+        return this.rawFileData.slice(start, start + length);
+    }
+
     readInt8(offset) {
         this.offset += 1;
         return this.rawFileData.readInt8(offset);
@@ -73,7 +77,12 @@ class WYSMOD {
                 "Parsed file data already exists, and is being erased."
             );
 
-        this.parsedFileData = { metadata: {}, file: Buffer.from([0x00]) };
+        this.parsedFileData = {
+            metadata: {},
+            modBinary: Buffer.from([0x00]),
+            modDebugger: Buffer.from([0x00]),
+            modCover: Buffer.from([0x00]),
+        };
 
         if (this.readStringSegment(0, 7) !== "WYSMOD1")
             throw new Error("File is not WYSMOD, cannot parse");
@@ -141,8 +150,21 @@ class WYSMOD {
 
         this.offset += length;
 
-        // Read file data
-        this.parsedFileData.file = this.rawFileData.slice(this.offset);
+        // Read mod binary
+        length = this.readDouble(this.offset);
+        this.parsedFileData.modBinary = this.readSegment(this.offset, length);
+
+        this.offset += length;
+
+        // Read mod cover
+        length = this.readDouble(this.offset);
+        this.parsedFileData.modCover = this.readSegment(this.offset, length);
+
+        this.offset += length;
+
+        // Read mod debugger
+        length = this.readDouble(this.offset);
+        this.parsedFileData.modDebugger = this.readSegment(this.offset, length);
     }
 }
 

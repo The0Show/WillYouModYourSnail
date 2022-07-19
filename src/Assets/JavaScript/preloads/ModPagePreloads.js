@@ -18,6 +18,8 @@ class ModPagePreloads {
             this.appData = res;
             this.ListMods();
         });
+
+        this.coreMods = ["com.github.benjaminpants.wys.snailax"];
     }
 
     /**
@@ -64,33 +66,46 @@ class ModPagePreloads {
             });
         }
 
-        deleteButton.addEventListener("click", () => {
-            if (deleteButton.innerText !== " Are you sure?") {
-                deleteButton.innerHTML =
-                    '<i class="fas fa-trash"></i> Are you sure?';
-            } else {
-                deleteButton.innerHTML = `<i class="fas fa-spinner fa-pulse"></i>`;
-                deleteButton.disabled = true;
+        if (deleteButton) {
+            deleteButton.addEventListener("click", () => {
+                if (deleteButton.innerText !== " Are you sure?") {
+                    deleteButton.innerHTML =
+                        '<i class="fas fa-trash"></i> Are you sure?';
+                } else {
+                    deleteButton.innerHTML = `<i class="fas fa-spinner fa-pulse"></i>`;
+                    deleteButton.disabled = true;
 
-                removeSync(
-                    `${this.appData}\\Mod Info\\${element.getAttribute(
-                        "wys-modid"
-                    )}`
-                );
-                removeSync(
-                    `${this.appData}\\Mod Binaries\\${element.getAttribute(
-                        "wys-modid"
-                    )}`
-                );
+                    removeSync(
+                        `${this.appData}\\Mod Info\\${element.getAttribute(
+                            "wys-modid"
+                        )}`
+                    );
+                    removeSync(
+                        `${this.appData}\\Mod Binaries\\${element.getAttribute(
+                            "wys-modid"
+                        )}`
+                    );
+                    removeSync(
+                        `${this.appData}\\Mod Covers\\${element.getAttribute(
+                            "wys-modid"
+                        )}`
+                    );
+                    removeSync(
+                        `${this.appData}\\Mod Debuggers\\${element.getAttribute(
+                            "wys-modid"
+                        )}`
+                    );
 
-                window.location.reload();
-            }
-        });
+                    window.location.reload();
+                }
+            });
 
-        deleteButton.addEventListener("focusout", () => {
-            if (deleteButton.innerText !== "")
-                deleteButton.innerHTML = '<i class="fas fa-trash"></i> Delete';
-        });
+            deleteButton.addEventListener("focusout", () => {
+                if (deleteButton.innerText !== "")
+                    deleteButton.innerHTML =
+                        '<i class="fas fa-trash"></i> Delete';
+            });
+        }
     }
 
     ListMods() {
@@ -115,7 +130,11 @@ class ModPagePreloads {
             wys-modid="${mod.id}"
         >
             <img
-                src="../Assets/Images/defaultModImage.png"
+                src="${
+                    existsSync(`${this.appData}\\Mod Covers\\${modList[index]}`)
+                        ? `${this.appData}\\Mod Covers\\${modList[index]}`
+                        : "../Assets/Images/defaultModImage.png"
+                }"
                 class="card-img"
                 style="
                     opacity: 0.6;
@@ -131,9 +150,13 @@ class ModPagePreloads {
                 style="text-align: right; position: relative"
             >
                 <h5 class="card-title">${
-                    mod.id.startsWith("dllimport")
-                        ? '<span class="badge bg-primary">DLL</span> '
-                        : ""
+                    mod.isCoreMod
+                        ? '<span class="badge bg-primary">Core Mod</span> '
+                        : `${
+                              mod.id.startsWith("dllimport")
+                                  ? '<span class="badge bg-primary">DLL</span> '
+                                  : ""
+                          }`
                 }${mod.name}</h5>
                 <p class="card-text">${
                     mod.description
@@ -153,9 +176,11 @@ class ModPagePreloads {
                 }</small
                     >
                 </p>
-                <button type="button" class="btn btn-${
-                    mod.enabled ? "primary" : "secondary"
-                }" id="enableButton">
+                ${
+                    !mod.isCoreMod
+                        ? `<button type="button" class="btn btn-${
+                              mod.enabled ? "primary" : "secondary"
+                          }" id="enableButton">
                     ${
                         mod.enabled
                             ? '<i class="fas fa-toggle-on"></i> Disable'
@@ -164,7 +189,9 @@ class ModPagePreloads {
                 </button>
                 <button type="button" class="btn btn-danger" id="deleteButton">
                     <i class="fas fa-trash"></i> Delete
-                </button>
+                </button>`
+                        : `<p>Core mods cannot be disabled or deleted.</p>`
+                }
             </div>
         </div>
         <br />`;

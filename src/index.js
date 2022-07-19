@@ -12,6 +12,7 @@ const fs = require("fs-extra");
 const unhandled = require("electron-unhandled");
 const { createLogger, format, transports } = require("winston");
 const { readFileSync } = require("fs-extra");
+const os = require("os");
 
 // function handleStartupEvent() {
 //     if (process.platform !== "win32") {
@@ -102,10 +103,22 @@ const wittyComments = [
     "Oops...",
     "That hurt.",
     "I'm scared.",
-    "My name is Squid, and I'm a Error Box!",
+    "My name is Squid, and I'm an Error Box!",
     "Everything is going according to plan.",
     "I need some chaos engineering.",
     "*grabs popcorn*",
+    "Nice computer you got here. Can I have it?",
+    "Welcome to my simulation!",
+    "*happy unicorn sound*",
+    '"One of the worst downloadable games I\'ve ever played."',
+    "What are you doing in my swamp?",
+    "Would you like a hug?",
+    "Would you like some fries with that?",
+    "Your PC ran into a problem and needs to restart. We're\njust collecting some error info, and then we'll restart for\nyou.", //why
+    "This is awkward.",
+    "But it works on MY machine.",
+    "418", // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418
+    `This is the story of a user named ${os.userInfo().username}.`,
 ];
 
 function getWittyComment() {
@@ -160,6 +173,10 @@ app.on("ready", () => {
         fs.mkdirSync(`${appData}\\Mod Info`);
     if (!fs.existsSync(`${appData}\\Mod Binaries`))
         fs.mkdirSync(`${appData}\\Mod Binaries`);
+    if (!fs.existsSync(`${appData}\\Mod Covers`))
+        fs.mkdirSync(`${appData}\\Mod Covers`);
+    if (!fs.existsSync(`${appData}\\Mod Debuggers`))
+        fs.mkdirSync(`${appData}\\Mod Debuggers`);
     if (!fs.existsSync(`${appData}\\Logs`)) fs.mkdirSync(`${appData}\\Logs`);
 
     logger.add(
@@ -176,6 +193,7 @@ app.on("ready", () => {
     mainWindow = new BrowserWindow({
         title: "Will You Mod Your Snail",
         center: true,
+        width: 880,
         maxWidth: 991,
         minWidth: 784,
         minHeight: 541,
@@ -302,6 +320,10 @@ ipcMain.handle("uploadModFile", async (event, args) => {
     });
 
     return file.filePaths[0];
+});
+
+ipcMain.handle("getVersion", () => {
+    return app.getVersion();
 });
 
 // Again, attemping to catch crashes (see Assets/JavaScript/preload.js)

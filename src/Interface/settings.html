@@ -22,13 +22,15 @@
             src="../Assets/FontAwesome/088b6a2344.js"
             crossorigin="anonymous"
         ></script>
+        <script src="../Assets/JavaScript/libs/howler.min.js"></script>
     </head>
     <body>
         <button
-            id="syncingModalOpener"
+            id="creditsModalOpener"
             hidden
             data-bs-toggle="modal"
-            data-bs-target="#syncingModal"
+            data-bs-target="#creditsModal"
+            onclick="creditsMusic.play();"
         ></button>
         <center>
             <h1>
@@ -48,7 +50,93 @@
                 id="settingsTabContent"
                 style="text-align: left; margin: 10px"
             ></div>
+            <hr />
+            <small></small>
         </center>
+
+        <div
+            class="modal"
+            id="creditsModal"
+            tabindex="-1"
+            aria-labelledby="creditsModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                            onclick="creditsMusic.stop();"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <center>
+                            <h1>
+                                <i class="fas fa-star fa-spin"></i> Credits!
+                                <i class="fas fa-star fa-spin"></i>
+                            </h1>
+                            <hr />
+                            <h3>Developers</h3>
+                            <h4>The0Show - Most stuff?</h4>
+                            <!-- Put your name under here with what you did :D -->
+                            <br />
+                            <h3>Special Thanks</h3>
+                            <h4>ConfiG - Creator of GMML</h4>
+                            <h4>Jonas Tyroller - Creator of Will You Snail</h4>
+                            <h4>
+                                MissingTextureMan101 - Created the Will You
+                                Snail Modding Community Logo, which is used here
+                            </h4>
+                            <h4>
+                                StackOverflow - Stopped me from having mental
+                                breakdowns :)
+                            </h4>
+                            <hr />
+                            <h5>Legal Things</h5>
+                            <h6>
+                                Will You Mod Your Snail is not affiliated with
+                                Jonas Tyroller or Will You Snail.
+                            </h6>
+                            <h6>
+                                Will You Mod Your Snail is
+                                <a
+                                    href="https://github.com/The0Show/WillYouModYourSnail/blob/main/LICENSE.txt"
+                                    target="_blank"
+                                    >licensed under the MIT License</a
+                                >.
+                            </h6>
+                            <h6>
+                                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT
+                                WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+                                INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+                                MERCHANTABILITY, FITNESS FOR A PARTICULAR
+                                PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+                                THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+                                ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+                                IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+                                ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+                                SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+                                SOFTWARE.
+                            </h6>
+                            <small style="color: white"
+                                >yes, this is a reference to the usb loader gx
+                                credits</small
+                            >
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const creditsMusic = new Howl({
+                src: ["../Assets/Audio/CreditsLoop.ogg"],
+                loop: true,
+            });
+        </script>
 
         <!-- Bootstrap JavaScript -->
         <script

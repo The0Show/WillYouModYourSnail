@@ -1,3 +1,4 @@
+const { ipcRenderer } = require("electron");
 const {
     readdirSync,
     readFileSync,
@@ -11,6 +12,7 @@ class SettingsPagePreloads {
      */
     constructor() {
         this.buildSettingsPage();
+        this.handleSmallText();
     }
 
     /**
@@ -228,6 +230,18 @@ class SettingsPagePreloads {
             .addEventListener("input", () => {
                 setTimeout(() => this.localizeInnerText(), 100);
             });
+    }
+
+    handleSmallText() {
+        ipcRenderer.invoke("getVersion", []).then((res) => {
+            document.querySelector(
+                "small"
+            ).innerText = `v${res} • © 2022 The0Show and Contributors`;
+        });
+
+        document.querySelector("small").addEventListener("click", () => {
+            document.getElementById("creditsModalOpener").click();
+        });
     }
 }
 
