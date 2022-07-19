@@ -1,4 +1,5 @@
 const { existsSync, readJSONSync } = require("fs-extra");
+const wait = require("util").promisify(setTimeout);
 
 class GlobalPreload {
     /**
@@ -18,7 +19,7 @@ class GlobalPreload {
     /**
      * Injects the header into the `body`.
      */
-    injectHeader() {
+    async injectHeader() {
         const headerPages = [
             ["Mods", "header.mods", "fa-puzzle-piece", "mods.html"],
             //["Levels", "header.levels", "fa-ruler-combined", "levels.html"],
@@ -53,7 +54,7 @@ class GlobalPreload {
                     height="48"
                 />
             </a>
-            <button type="button" id="launchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myAmazingModal">
+            <button type="button" id="launchButton" class="btn btn-primary">
                 <i class="fas fa-play"></i> <blank wys-localizationkey="header.playbutton">Launch Will You Snail</blank>
             </button>
             <button
@@ -75,6 +76,8 @@ class GlobalPreload {
         </div>
     </nav>
     <br />${document.body.innerHTML}`;
+
+        this.dealWithTheAnnoyingLaunchButton();
     }
 
     injectModals() {
@@ -152,6 +155,15 @@ class GlobalPreload {
 
     setupDefaultSettingValuesIfNeeded() {
         window.localStorage.getItem("");
+    }
+
+    dealWithTheAnnoyingLaunchButton() {
+        alert("hi");
+        document
+            .getElementById("launchButton")
+            .addEventListener("click", () => {
+                alert("sup with it");
+            });
     }
 }
 

@@ -11,6 +11,7 @@ const { openNewGitHubIssue, debugInfo } = require("electron-util");
 const fs = require("fs-extra");
 const unhandled = require("electron-unhandled");
 const { createLogger, format, transports } = require("winston");
+const { readFileSync } = require("fs-extra");
 
 // function handleStartupEvent() {
 //     if (process.platform !== "win32") {
@@ -53,7 +54,9 @@ const { createLogger, format, transports } = require("winston");
 //     app.exit();
 // }
 
-const levels = ["error", "warn", "info", "http", "verbose", "debug", "silly"];
+var crashCaught = false;
+
+const levels = ["error", "info", "warn", "http", "verbose", "debug", "silly"];
 
 const consoleFormat = format.printf(({ level, message, label, timestamp }) => {
     return `[${level}] ${message}`;
@@ -71,15 +74,46 @@ const logger = createLogger({
 });
 
 /**
+ * @type {BrowserWindow}
+ */
+let mainWindow;
+
+let logId = Date.now();
+
+/**
  *
  * @param {Error | null} error The thrown error. Can also be null, in which case the user will be given a blank bug report.
  */
 async function openBugReporter(error) {
     shell.openExternal(
         `https://github.com/The0Show/WillYouModYourSnail/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
-            error !== null ? `&what-happened=${error.stack}` : ""
-        }`
+            error !== null
+                ? `&title=${error.message}&what-happened=${error.stack}`
+                : ""
+        }&logs=${readFileSync(
+            `${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
+        )}`
     );
+}
+
+const wittyComments = [
+    "Squid broke it!",
+    "Ouch.",
+    "Oops...",
+    "That hurt.",
+    "I'm scared.",
+    "My name is Squid, and I'm a Error Box!",
+    "Everything is going according to plan.",
+    "I need some chaos engineering.",
+    "*grabs popcorn*",
+];
+
+function getWittyComment() {
+    try {
+        return wittyComments[Math.floor(Math.random() * wittyComments.length)];
+    } catch {
+        return "Witty comment unavailable :(";
+    }
 }
 
 /**
@@ -87,13 +121,21 @@ async function openBugReporter(error) {
  * @param {Error | null} error
  */
 async function catchCrash(error) {
+    logger.error(error.stack);
+
+    if (crashCaught) return;
+
+    crashCaught = true;
+
+    mainWindow.hide();
+
     const oopsDialog = await dialog.showMessageBox(null, {
         buttons: ["Relaunch", "Quit"],
-        message:
-            "Will You Mod Your Snail has crashed. We blame Squid. Please consider reporting this error so we can fix it :)",
-        title: "Oh no...",
+        detail: error.stack,
+        message: getWittyComment(),
+        title: "Will You Mod Your Snail has crashed!",
         type: "error",
-        checkboxLabel: "Open the issue reporter to report this crash",
+        checkboxLabel: "Open the issue reporter",
     });
 
     if (oopsDialog.checkboxChecked) await openBugReporter(error);
@@ -101,11 +143,6 @@ async function catchCrash(error) {
     if (oopsDialog.response === 0) app.relaunch();
     app.quit();
 }
-
-/**
- * @type {BrowserWindow}
- */
-let mainWindow;
 
 /**
  * Parses the scene directory to be sent to {@link BrowserWindow.loadFile loadFile} on a {@link BrowserWindow}
@@ -119,22 +156,29 @@ function parseSceneDir(sceneName) {
 app.on("ready", () => {
     const appData = `${app.getPath("appData")}\\wymys-loader`;
 
+    if (!fs.existsSync(`${appData}\\Mod Info`))
+        fs.mkdirSync(`${appData}\\Mod Info`);
+    if (!fs.existsSync(`${appData}\\Mod Binaries`))
+        fs.mkdirSync(`${appData}\\Mod Binaries`);
+    if (!fs.existsSync(`${appData}\\Logs`)) fs.mkdirSync(`${appData}\\Logs`);
+
     logger.add(
         new transports.File({
-            filename: `${appData}\\.log`,
+            filename: `${appData}\\Logs\\${logId}.log`,
             format: consoleFormat,
         })
     );
 
-    if (!fs.existsSync(`${appData}\\ModManifests`))
-        fs.mkdirSync(`${appData}\\ModManifests`);
-    if (!fs.existsSync(`${appData}\\ModPatches`))
-        fs.mkdirSync(`${appData}\\ModPatches`);
+    if (fs.readdirSync(`${appData}\\Logs`).length > 10) {
+        fs.removeSync(fs.readdirSync(`${appData}\\Logs`)[0]);
+    }
 
     mainWindow = new BrowserWindow({
         title: "Will You Mod Your Snail",
         center: true,
-        resizable: false,
+        maxWidth: 991,
+        minWidth: 784,
+        minHeight: 541,
         webPreferences: {
             nodeIntegration: true,
             preload: `${__dirname}/Assets/JavaScript/preload.js`,
@@ -145,14 +189,15 @@ app.on("ready", () => {
     // the packaged app.
     Menu.setApplicationMenu(app.isPackaged ? null : Menu.getApplicationMenu());
 
-    const client = require("discord-rich-presence")("967088639886655568");
+    // crashes if there is no discord client or if discord closes
+    // const client = require("discord-rich-presence")("967088639886655568");
 
-    client.updatePresence({
-        details: "Modding their snail",
-        largeImageKey: "snail",
-        startTimestamp: Date.now(),
-        instance: true,
-    });
+    // client.updatePresence({
+    //     details: "Modding their snail",
+    //     largeImageKey: "snail",
+    //     startTimestamp: Date.now(),
+    //     instance: true,
+    // });
 
     mainWindow.loadFile(parseSceneDir("init"));
 
@@ -221,7 +266,9 @@ app.on("browser-window-focus", () => {
     });
 
     globalShortcut.register("Shift+F8", () => {
-        shell.showItemInFolder(`${app.getPath("appData")}\\wymys-loader\\.log`);
+        shell.showItemInFolder(
+            `${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
+        );
     });
 });
 
