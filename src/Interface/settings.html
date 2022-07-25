@@ -1,161 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- the current settings system doesn't work without unsafe-inline, this should be changed soon -->
-        <meta
-            http-equiv="Content-Security-Policy"
-            content="script-src 'self' 'unsafe-inline'"
-        />
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!-- the current settings system doesn't work without unsafe-inline, this should be changed soon -->
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="script-src 'self' 'unsafe-inline'"
+		/>
 
-        <!-- Bootstrap CSS -->
-        <link
-            href="../Assets/Bootstrap/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-            crossorigin="anonymous"
-        />
-        <link href="../Assets/Styles/global.css" rel="stylesheet" />
-        <script
-            src="../Assets/FontAwesome/088b6a2344.js"
-            crossorigin="anonymous"
-        ></script>
-        <script src="../Assets/JavaScript/libs/howler.min.js"></script>
-    </head>
-    <body>
-        <button
-            id="creditsModalOpener"
-            hidden
-            data-bs-toggle="modal"
-            data-bs-target="#creditsModal"
-            onclick="creditsMusic.play();"
-        ></button>
-        <center>
-            <h1>
-                <i class="fas fa-cog"></i>
-                <b wys-localizationkey="settings.title">Settings</b>
-            </h1>
-            <h6 wys-localizationkey="settings.description">Adjust settings!</h6>
-            <hr />
+		<!-- Bootstrap CSS -->
+		<link
+			href="../Assets/Bootstrap/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+			crossorigin="anonymous"
+		/>
+		<link href="../Assets/Styles/global.css" rel="stylesheet" />
+		<script
+			src="../Assets/FontAwesome/088b6a2344.js"
+			crossorigin="anonymous"
+		></script>
+		<script src="../Assets/JavaScript/libs/howler.js/dist/howler.min.js"></script>
+	</head>
+	<body>
+		<button
+			id="creditsModalOpener"
+			hidden
+			data-bs-toggle="modal"
+			data-bs-target="#creditsModal"
+			onclick="creditsMusic.play();"
+		></button>
+		<center>
+			<h1>
+				<i class="fas fa-cog"></i>
+				<b wys-localizationkey="settings.title">Settings</b>
+			</h1>
+			<h6 wys-localizationkey="settings.description">Adjust settings!</h6>
+			<hr />
 
-            <ul
-                class="nav nav-tabs justify-content-center"
-                id="settingsTab"
-                role="tablist"
-            ></ul>
-            <div
-                class="tab-content"
-                id="settingsTabContent"
-                style="text-align: left; margin: 10px"
-            ></div>
-            <hr />
-            <small></small>
-        </center>
+			<ul
+				class="nav nav-tabs justify-content-center"
+				id="settingsTab"
+				role="tablist"
+			></ul>
+			<div
+				class="tab-content"
+				id="settingsTabContent"
+				style="text-align: left; margin: 10px"
+			></div>
+			<hr />
+			<small></small>
+		</center>
 
-        <div
-            class="modal"
-            id="creditsModal"
-            tabindex="-1"
-            aria-labelledby="creditsModalLabel"
-            aria-hidden="true"
-        >
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                            onclick="creditsMusic.stop();"
-                        ></button>
-                    </div>
-                    <div class="modal-body">
-                        <center>
-                            <h1>
-                                <i class="fas fa-star fa-spin"></i> Credits!
-                                <i class="fas fa-star fa-spin"></i>
-                            </h1>
-                            <hr />
-                            <h3>Developers</h3>
-                            <h4>The0Show - Most stuff?</h4>
-                            <!-- Put your name under here with what you did :D -->
-                            <br />
-                            <h3>Special Thanks</h3>
-                            <h4>ConfiG - Creator of GMML</h4>
-                            <h4>Jonas Tyroller - Creator of Will You Snail</h4>
-                            <h4>
-                                MissingTextureMan101 - Created the Will You
-                                Snail Modding Community Logo, which is used here
-                            </h4>
-                            <h4>
-                                StackOverflow - Stopped me from having mental
-                                breakdowns :)
-                            </h4>
-                            <hr />
-                            <h5>Legal Things</h5>
-                            <h6>
-                                Will You Mod Your Snail is not affiliated with
-                                Jonas Tyroller or Will You Snail.
-                            </h6>
-                            <h6>
-                                Will You Mod Your Snail is
-                                <a
-                                    href="https://github.com/The0Show/WillYouModYourSnail/blob/main/LICENSE.txt"
-                                    target="_blank"
-                                    >licensed under the MIT License</a
-                                >.
-                            </h6>
-                            <h6>
-                                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT
-                                WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-                                INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-                                MERCHANTABILITY, FITNESS FOR A PARTICULAR
-                                PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-                                THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-                                ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-                                IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-                                ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-                                SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-                                SOFTWARE.
-                            </h6>
-                            <small style="color: white"
-                                >yes, this is a reference to the usb loader gx
-                                credits</small
-                            >
-                        </center>
-                    </div>
-                </div>
-            </div>
-        </div>
+		<div
+			class="modal"
+			id="creditsModal"
+			tabindex="-1"
+			aria-labelledby="creditsModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-fullscreen">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Close"
+							onclick="creditsMusic.stop();"
+						></button>
+					</div>
+					<div class="modal-body">
+						<center>
+							<h1>
+								<i class="fas fa-star fa-spin"></i> Credits!
+								<i class="fas fa-star fa-spin"></i>
+							</h1>
+							<hr />
+							<h3>Developers</h3>
+							<h4>The0Show - Most stuff?</h4>
+							<!-- Put your name under here with what you did :D -->
+							<br />
+							<h3>Special Thanks</h3>
+							<h4>ConfiG - Creator of GMML</h4>
+							<h4>Jonas Tyroller - Creator of Will You Snail</h4>
+							<h4>
+								MissingTextureMan101 - Created the Will You
+								Snail Modding Community Logo, which is used here
+							</h4>
+							<h4>
+								StackOverflow - Stopped me from having mental
+								breakdowns :)
+							</h4>
+							<hr />
+							<h5>Legal Things</h5>
+							<h6>
+								Will You Mod Your Snail is not affiliated with
+								Jonas Tyroller or Will You Snail.
+							</h6>
+							<h6>
+								Will You Mod Your Snail is
+								<a
+									href="https://github.com/The0Show/WillYouModYourSnail/blob/main/LICENSE.txt"
+									target="_blank"
+									>licensed under the MIT License</a
+								>.
+							</h6>
+							<h6>
+								THE SOFTWARE IS PROVIDED "AS IS", WITHOUT
+								WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+								INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+								MERCHANTABILITY, FITNESS FOR A PARTICULAR
+								PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+								THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+								ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+								IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+								ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+								SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+								SOFTWARE.
+							</h6>
+							<small style="color: white"
+								>yes, this is a reference to the usb loader gx
+								credits</small
+							>
+						</center>
+					</div>
+				</div>
+			</div>
+		</div>
 
-        <script>
-            const creditsMusic = new Howl({
-                src: ["../Assets/Audio/CreditsLoop.ogg"],
-                loop: true,
-            });
-        </script>
+		<script>
+			const creditsMusic = new Howl({
+				src: ["../Assets/Audio/CreditsLoop.ogg"],
+				loop: true,
+			});
+		</script>
 
-        <!-- Bootstrap JavaScript -->
-        <script
-            src="../Assets/Bootstrap/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-            crossorigin="anonymous"
-        ></script>
+		<!-- Bootstrap JavaScript -->
+		<script
+			src="../Assets/Bootstrap/js/bootstrap.bundle.min.js"
+			integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+			crossorigin="anonymous"
+		></script>
 
-        <script>
-            function changeSetting(setting) {
-                if (setting.checked !== undefined)
-                    window.localStorage.setItem(setting.id, setting.checked);
+		<script>
+			function changeSetting(setting) {
+				if (setting.checked !== undefined)
+					window.localStorage.setItem(setting.id, setting.checked);
 
-                if (
-                    setting.value !== undefined &&
-                    setting.checked === undefined
-                )
-                    window.localStorage.setItem(setting.id, setting.value);
-            }
-        </script>
-    </body>
+				if (
+					setting.value !== undefined &&
+					setting.checked === undefined
+				)
+					window.localStorage.setItem(setting.id, setting.value);
+			}
+		</script>
+	</body>
 </html>
