@@ -218,7 +218,7 @@ class ModPagePreloads {
                 style="text-align: right; position: relative"
             >
                 <h5 class="card-title"><i class="fas fa-exclamation-triangle"></i> ${mod.id}</h5>
-                <p class="card-text">A mod config was found with the ID <code>${mod.id}</code>, but is missing a mod binary.<br />It will be removed on the next game launch unless fixed.</p>
+                <p class="card-text">A mod config was found with the ID <code>${mod.id}</code>, but is missing a mod binary.</p>
                 <button type="button" class="btn btn-danger" id="deleteButton">
                     <i class="fas fa-trash"></i> Delete
                 </button>

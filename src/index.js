@@ -169,6 +169,8 @@ function parseSceneDir(sceneName) {
 app.on("ready", () => {
     const appData = `${app.getPath("appData")}\\wymys-loader`;
 
+    fs.emptyDirSync(`${appData}\\Temp`);
+
     if (!fs.existsSync(`${appData}\\Mod Info`))
         fs.mkdirSync(`${appData}\\Mod Info`);
     if (!fs.existsSync(`${appData}\\Mod Binaries`))

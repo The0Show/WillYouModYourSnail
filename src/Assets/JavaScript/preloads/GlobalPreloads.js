@@ -92,10 +92,10 @@ class GlobalPreload {
                 </div>
             </div>
         </div>
-        <!-- this "hack" centers the text under the main header content -->
+        <!-- this "hack" centers the text under the main header content
         <div class="container-fluid"><p></p><div class="alert alert-primary fade show" role="alert">
         Will You Mod Your Snail has downloaded an update. It will be installed once it is closed.
-      </div><p></p></div>
+      </div><p></p></div> -->
     </nav>
     <br />${document.body.innerHTML}`;
     }
@@ -305,9 +305,9 @@ class GlobalPreload {
             if (proccessedMods / totalMods === 0)
                 launchButton.className = "btn btn-danger";
 
-            launchButton.innerHTML = `Successfully processed ${
+            launchButton.innerHTML = `Successfully processed ${Math.round(
                 (proccessedMods / totalMods) * 100
-            }% of installed mods`;
+            )}% of installed mods`;
             if (totalMods === 0)
                 launchButton.innerHTML = `No mods found - launching without any mods`;
 
