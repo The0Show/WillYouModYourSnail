@@ -1,11 +1,12 @@
 const {
-    app,
-    BrowserWindow,
-    Menu,
-    ipcMain,
-    shell,
-    globalShortcut,
-    dialog,
+	app,
+	BrowserWindow,
+	Menu,
+	ipcMain,
+	shell,
+	globalShortcut,
+	dialog,
+	autoUpdater,
 } = require("electron");
 const { openNewGitHubIssue, debugInfo } = require("electron-util");
 const fs = require("fs-extra");
@@ -60,18 +61,18 @@ var crashCaught = false;
 const levels = ["error", "info", "warn", "http", "verbose", "debug", "silly"];
 
 const consoleFormat = format.printf(({ level, message, label, timestamp }) => {
-    return `[${level}] ${message}`;
+	return `[${level}] ${message}`;
 });
 
 const logger = createLogger({
-    level: "info",
-    format: format.json(),
-    defaultMeta: { service: "user-service" },
-    transports: [
-        new transports.Console({
-            format: consoleFormat,
-        }),
-    ],
+	level: "info",
+	format: format.json(),
+	defaultMeta: { service: "user-service" },
+	transports: [
+		new transports.Console({
+			format: consoleFormat,
+		}),
+	],
 });
 
 /**
@@ -86,47 +87,47 @@ let logId = Date.now();
  * @param {Error | null} error The thrown error. Can also be null, in which case the user will be given a blank bug report.
  */
 async function openBugReporter(error) {
-    shell.openExternal(
-        `https://github.com/The0Show/WillYouModYourSnail/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
-            error !== null
-                ? `&title=${error.message}&what-happened=${error.stack}`
-                : ""
-        }&logs=${readFileSync(
-            `${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
-        )}`
-    );
+	shell.openExternal(
+		`https://github.com/The0Show/WillYouModYourSnail/issues/new?assignees=&labels=bug&template=BUG_REPORT.yml${
+			error !== null
+				? `&title=${error.message}&what-happened=${error.stack}`
+				: ""
+		}&logs=${readFileSync(
+			`${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
+		)}`
+	);
 }
 
 const wittyComments = [
-    "Squid broke it!",
-    "Ouch.",
-    "Oops...",
-    "That hurt.",
-    "I'm scared.",
-    "My name is Squid, and I'm an Error Box!",
-    "Everything is going according to plan.",
-    "I need some chaos engineering.",
-    "*grabs popcorn*",
-    "Nice computer you got here. Can I have it?",
-    "Welcome to my simulation!",
-    "*happy unicorn sound*",
-    '"One of the worst downloadable games I\'ve ever played."',
-    "What are you doing in my swamp?",
-    "Would you like a hug?",
-    "Would you like some fries with that?",
-    "Your PC ran into a problem and needs to restart. We're\njust collecting some error info, and then we'll restart for\nyou.", //why
-    "This is awkward.",
-    "But it works on MY machine.",
-    "418", // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418
-    `This is the story of a user named ${os.userInfo().username}.`,
+	"Squid broke it!",
+	"Ouch.",
+	"Oops...",
+	"That hurt.",
+	"I'm scared.",
+	"My name is Squid, and I'm an Error Box!",
+	"Everything is going according to plan.",
+	"I need some chaos engineering.",
+	"*grabs popcorn*",
+	"Nice computer you got here. Can I have it?",
+	"Welcome to my simulation!",
+	"*happy unicorn sound*",
+	'"One of the worst downloadable games I\'ve ever played."',
+	"What are you doing in my swamp?",
+	"Would you like a hug?",
+	"Would you like some fries with that?",
+	"Your PC ran into a problem and needs to restart. We're\njust collecting some error info, and then we'll restart for\nyou.", //why
+	"This is awkward.",
+	"But it works on MY machine.",
+	"418", // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/418
+	`This is the story of a user named ${os.userInfo().username}.`,
 ];
 
 function getWittyComment() {
-    try {
-        return wittyComments[Math.floor(Math.random() * wittyComments.length)];
-    } catch {
-        return "Witty comment unavailable :(";
-    }
+	try {
+		return wittyComments[Math.floor(Math.random() * wittyComments.length)];
+	} catch {
+		return "Witty comment unavailable :(";
+	}
 }
 
 /**
@@ -134,27 +135,27 @@ function getWittyComment() {
  * @param {Error | null} error
  */
 async function catchCrash(error) {
-    logger.error(error.stack);
+	logger.error(error.stack);
 
-    if (crashCaught) return;
+	if (crashCaught) return;
 
-    crashCaught = true;
+	crashCaught = true;
 
-    mainWindow.hide();
+	mainWindow.hide();
 
-    const oopsDialog = await dialog.showMessageBox(null, {
-        buttons: ["Relaunch", "Quit"],
-        detail: error.stack,
-        message: getWittyComment(),
-        title: "Will You Mod Your Snail has crashed!",
-        type: "error",
-        checkboxLabel: "Open the issue reporter",
-    });
+	const oopsDialog = await dialog.showMessageBox(null, {
+		buttons: ["Relaunch", "Quit"],
+		detail: error.stack,
+		message: getWittyComment(),
+		title: "Will You Mod Your Snail has crashed!",
+		type: "error",
+		checkboxLabel: "Open the issue reporter",
+	});
 
-    if (oopsDialog.checkboxChecked) await openBugReporter(error);
+	if (oopsDialog.checkboxChecked) await openBugReporter(error);
 
-    if (oopsDialog.response === 0) app.relaunch();
-    app.quit();
+	if (oopsDialog.response === 0) app.relaunch();
+	app.quit();
 }
 
 /**
@@ -163,102 +164,130 @@ async function catchCrash(error) {
  * @returns {string} The parsed scene directory to be sent to {@link BrowserWindow.loadFile loadFile} on a {@link BrowserWindow}
  */
 function parseSceneDir(sceneName) {
-    return `${__dirname}/Interface/${sceneName}.html`;
+	return `${__dirname}/Interface/${sceneName}.html`;
 }
 
 app.on("ready", () => {
-    const appData = `${app.getPath("appData")}\\wymys-loader`;
+	const appData = `${app.getPath("appData")}\\wymys-loader`;
 
-    fs.emptyDirSync(`${appData}\\Temp`);
+	fs.emptyDirSync(`${appData}\\Temp`);
 
-    if (!fs.existsSync(`${appData}\\Mod Info`))
-        fs.mkdirSync(`${appData}\\Mod Info`);
-    if (!fs.existsSync(`${appData}\\Mod Binaries`))
-        fs.mkdirSync(`${appData}\\Mod Binaries`);
-    if (!fs.existsSync(`${appData}\\Mod Covers`))
-        fs.mkdirSync(`${appData}\\Mod Covers`);
-    if (!fs.existsSync(`${appData}\\Mod Debuggers`))
-        fs.mkdirSync(`${appData}\\Mod Debuggers`);
-    if (!fs.existsSync(`${appData}\\Logs`)) fs.mkdirSync(`${appData}\\Logs`);
+	if (!fs.existsSync(`${appData}\\Mod Info`))
+		fs.mkdirSync(`${appData}\\Mod Info`);
+	if (!fs.existsSync(`${appData}\\Mod Binaries`))
+		fs.mkdirSync(`${appData}\\Mod Binaries`);
+	if (!fs.existsSync(`${appData}\\Mod Covers`))
+		fs.mkdirSync(`${appData}\\Mod Covers`);
+	if (!fs.existsSync(`${appData}\\Mod Debuggers`))
+		fs.mkdirSync(`${appData}\\Mod Debuggers`);
+	if (!fs.existsSync(`${appData}\\Logs`)) fs.mkdirSync(`${appData}\\Logs`);
 
-    logger.add(
-        new transports.File({
-            filename: `${appData}\\Logs\\${logId}.log`,
-            format: consoleFormat,
-        })
-    );
+	logger.add(
+		new transports.File({
+			filename: `${appData}\\Logs\\${logId}.log`,
+			format: consoleFormat,
+		})
+	);
 
-    if (fs.readdirSync(`${appData}\\Logs`).length > 10) {
-        fs.removeSync(fs.readdirSync(`${appData}\\Logs`)[0]);
-    }
+	if (fs.readdirSync(`${appData}\\Logs`).length > 10) {
+		fs.removeSync(fs.readdirSync(`${appData}\\Logs`)[0]);
+	}
 
-    mainWindow = new BrowserWindow({
-        title: "Will You Mod Your Snail",
-        center: true,
-        width: 880,
-        maxWidth: 991,
-        minWidth: 784,
-        minHeight: 541,
-        webPreferences: {
-            nodeIntegration: true,
-            preload: `${__dirname}/Assets/JavaScript/preload.js`,
-        },
-    });
+	if (app.isPackaged) {
+		const server = "http://willyoumodyoursnail.the0show.com:3000";
+		const url = `${server}/update/${process.platform}/${app.getVersion()}`;
 
-    // By default, Electron has it's own application menu. We don't want it to appear in
-    // the packaged app.
-    Menu.setApplicationMenu(app.isPackaged ? null : Menu.getApplicationMenu());
+		autoUpdater.setFeedURL({ url });
 
-    // crashes if there is no discord client or if discord closes
-    // const client = require("discord-rich-presence")("967088639886655568");
+		autoUpdater.checkForUpdates();
+	}
 
-    // client.updatePresence({
-    //     details: "Modding their snail",
-    //     largeImageKey: "snail",
-    //     startTimestamp: Date.now(),
-    //     instance: true,
-    // });
+	mainWindow = new BrowserWindow({
+		title: "Will You Mod Your Snail",
+		center: true,
+		width: 880,
+		maxWidth: 991,
+		minWidth: 784,
+		minHeight: 541,
+		webPreferences: {
+			nodeIntegration: true,
+			preload: `${__dirname}/Assets/JavaScript/preload.js`,
+		},
+	});
 
-    mainWindow.loadFile(parseSceneDir("init"));
+	// By default, Electron has it's own application menu. We don't want it to appear in
+	// the packaged app.
+	Menu.setApplicationMenu(app.isPackaged ? null : Menu.getApplicationMenu());
 
-    mainWindow.on("unresponsive", async (err) => {
-        const unresDialog = await dialog.showMessageBox(null, {
-            buttons: ["Wait", "Relaunch", "Quit"],
-            message:
-                "Will You Mod Your Snail is not responding. What would you like to do?",
-            title: "Will You Mod Your Snail",
-            type: "info",
-        });
+	// crashes if there is no discord client or if discord closes
+	// const client = require("discord-rich-presence")("967088639886655568");
 
-        switch (unresDialog.response) {
-            case 1:
-                app.relaunch();
-                app.exit();
-                break;
+	// client.updatePresence({
+	//     details: "Modding their snail",
+	//     largeImageKey: "snail",
+	//     startTimestamp: Date.now(),
+	//     instance: true,
+	// });
 
-            case 2:
-                app.exit();
-                break;
+	mainWindow.loadFile(parseSceneDir("init"));
 
-            default:
-                break;
-        }
-    });
+	mainWindow.on("unresponsive", async (err) => {
+		const unresDialog = await dialog.showMessageBox(null, {
+			buttons: ["Wait", "Relaunch", "Quit"],
+			message:
+				"Will You Mod Your Snail is not responding. What would you like to do?",
+			title: "Will You Mod Your Snail",
+			type: "info",
+		});
 
-    // This allows _blank to open in the user's browser rather than a new Electron window.
-    mainWindow.webContents.on("new-window", function (e, url) {
-        e.preventDefault();
-        shell.openExternal(url);
-    });
+		switch (unresDialog.response) {
+			case 1:
+				app.relaunch();
+				app.exit();
+				break;
 
-    // This is me attempting to get console messages and crashes from the window
-    mainWindow.webContents.on("console-message", (e, level, message) => {
-        logger.log(levels[level], message);
-    });
+			case 2:
+				app.exit();
+				break;
 
-    app.on("render-process-gone", (ev, web, details) =>
-        catchCrash(new Error(details.reason))
-    );
+			default:
+				break;
+		}
+	});
+
+	// This allows _blank to open in the user's browser rather than a new Electron window.
+	mainWindow.webContents.on("new-window", function (e, url) {
+		e.preventDefault();
+		shell.openExternal(url);
+	});
+
+	// This is me attempting to get console messages and crashes from the window
+	mainWindow.webContents.on("console-message", (e, level, message) => {
+		logger.log(levels[level], message);
+	});
+
+	app.on("render-process-gone", (ev, web, details) =>
+		catchCrash(new Error(details.reason))
+	);
+});
+
+autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
+	const dialogOpts = {
+		type: "info",
+		buttons: ["Restart", "Later"],
+		title: "Update Downloaded",
+		message: process.platform === "win32" ? releaseNotes : releaseName,
+		detail: "A new version has been downloaded. Restart the app to apply the updates!",
+	};
+
+	dialog.showMessageBox(dialogOpts).then((returnValue) => {
+		if (returnValue.response === 0) autoUpdater.quitAndInstall();
+	});
+});
+
+autoUpdater.on("error", (message) => {
+	console.error("There was a problem updating!");
+	console.error(message);
 });
 
 // I learned this on StackOverflow (of course), but this fixes the problem of
@@ -266,66 +295,66 @@ app.on("ready", () => {
 // shortcuts when the window is focused, and unregistering them when the window
 // is unfocused.
 app.on("browser-window-focus", () => {
-    globalShortcut.register("Control+R", () => {
-        app.relaunch();
-        app.exit();
-    });
+	globalShortcut.register("Control+R", () => {
+		app.relaunch();
+		app.exit();
+	});
 
-    globalShortcut.register("Control+Shift+R", () => {
-        mainWindow.reload();
-    });
+	globalShortcut.register("Control+Shift+R", () => {
+		mainWindow.reload();
+	});
 
-    globalShortcut.register("Control+Shift+I", () => {
-        mainWindow.webContents.openDevTools();
-    });
+	globalShortcut.register("Control+Shift+I", () => {
+		mainWindow.webContents.openDevTools();
+	});
 
-    globalShortcut.register("F8", () => {
-        shell.openExternal(
-            "https://github.com/The0Show/WillYouModYourSnail/issues/new/choose"
-        );
-    });
+	globalShortcut.register("F8", () => {
+		shell.openExternal(
+			"https://github.com/The0Show/WillYouModYourSnail/issues/new/choose"
+		);
+	});
 
-    globalShortcut.register("Shift+F8", () => {
-        shell.showItemInFolder(
-            `${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
-        );
-    });
+	globalShortcut.register("Shift+F8", () => {
+		shell.showItemInFolder(
+			`${app.getPath("appData")}\\wymys-loader\\Logs\\${logId}.log`
+		);
+	});
 });
 
 app.on("browser-window-blur", () => {
-    globalShortcut.unregisterAll();
+	globalShortcut.unregisterAll();
 });
 
 ipcMain.handle("appDataReq", (event, args) => {
-    return `${app.getPath("appData")}\\wymys-loader`;
+	return `${app.getPath("appData")}\\wymys-loader`;
 });
 
 ipcMain.handle("uploadModFile", async (event, args) => {
-    const file = await dialog.showOpenDialog(null, {
-        properties: [
-            "openFile",
-            "dontAddToRecent",
-            "createDirectory",
-            "showHiddenFiles",
-        ],
-        title: "Select your mod file(s)",
-        filters: [
-            {
-                name: "Will You Snail Mods",
-                extensions: ["wysmod"],
-            },
-            {
-                name: "FLIPS BPS Output",
-                extensions: ["bps"],
-            },
-        ],
-    });
+	const file = await dialog.showOpenDialog(null, {
+		properties: [
+			"openFile",
+			"dontAddToRecent",
+			"createDirectory",
+			"showHiddenFiles",
+		],
+		title: "Select your mod file(s)",
+		filters: [
+			{
+				name: "Will You Snail Mods",
+				extensions: ["wysmod"],
+			},
+			{
+				name: "FLIPS BPS Output",
+				extensions: ["bps"],
+			},
+		],
+	});
 
-    return file.filePaths[0];
+	return file.filePaths[0];
 });
 
 ipcMain.handle("getVersion", () => {
-    return app.getVersion();
+	return app.getVersion();
 });
 
 // Again, attemping to catch crashes (see Assets/JavaScript/preload.js)

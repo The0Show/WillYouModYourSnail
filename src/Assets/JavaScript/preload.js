@@ -7,22 +7,25 @@ const unhandled = require("electron-unhandled");
 const SettingsPagePreloads = require("./preloads/SettingsPagePreloads");
 const OnboardingPrelaods = require("./preloads/OnboardingPreloads");
 const { ipcRenderer } = require("electron");
+const ToolsPagePreloads = require("./preloads/ToolsPagePreloads");
 
 document.addEventListener("DOMContentLoaded", () => {
-    try {
-        // load the global preloads
-        new GlobalPreload();
+	try {
+		// load the global preloads
+		new GlobalPreload();
 
-        // now be picky and load specific preloads
-        if (window.location.href.includes("mods.html")) new ModPagePreloads();
-        if (window.location.href.includes("upload.html"))
-            new UploadPagePreloads();
-        if (window.location.href.includes("settings.html"))
-            new SettingsPagePreloads();
-        if (window.location.href.includes("onboarding.html"))
-            new OnboardingPrelaods();
-    } catch (err) {
-        // try to catch crashes
-        ipcRenderer.send("handleCrash", err);
-    }
+		// now be picky and load specific preloads
+		if (window.location.href.includes("mods.html")) new ModPagePreloads();
+		if (window.location.href.includes("upload.html"))
+			new UploadPagePreloads();
+		if (window.location.href.includes("settings.html"))
+			new SettingsPagePreloads();
+		if (window.location.href.includes("onboarding.html"))
+			new OnboardingPrelaods();
+		if (window.location.href.includes("tools.html"))
+			new ToolsPagePreloads();
+	} catch (err) {
+		// try to catch crashes
+		ipcRenderer.send("handleCrash", err);
+	}
 });
