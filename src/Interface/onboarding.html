@@ -75,15 +75,14 @@
 			<!-- One "tab" for each step in the form: -->
 			<div class="tab">
 				<h2>
-					<blank wys-localizationkey="onboarding.page1.intro1"
-						>Welcome to</blank
+					<blank wys-localizationkey="onboarding.page1.intro1">Welcome to</blank
 					><br /><blank wys-localizationkey="onboarding.page1.intro2"
 						>Will You Mod Your Snail</blank
 					>
 				</h2>
 				<p wys-localizationkey="onboarding.page1.subtitle">
-					Hello there! This (hopefully simple) setup process should
-					get you up and running!
+					Hello there! This (hopefully simple) setup process should get you up
+					and running!
 				</p>
 				<div class="form-floating">
 					<select
@@ -136,12 +135,8 @@
 			</div>
 
 			<div class="tab">
-				<h2 wys-localizationkey="onboarding.finished">
-					Setup completed!
-				</h2>
-				<p wys-localizationkey="onboarding.finished.subtitle">
-					Have fun!
-				</p>
+				<h2 wys-localizationkey="onboarding.finished">Setup completed!</h2>
+				<p wys-localizationkey="onboarding.finished.subtitle">Have fun!</p>
 			</div>
 
 			<br />
@@ -242,9 +237,8 @@
 				}
 				// If the valid status is true, mark the step as finished and valid:
 				if (valid) {
-					document.getElementsByClassName("step")[
-						currentTab
-					].className += " finish";
+					document.getElementsByClassName("step")[currentTab].className +=
+						" finish";
 				}
 				return valid; // return the valid status
 			}

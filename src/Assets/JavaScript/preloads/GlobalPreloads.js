@@ -1,66 +1,64 @@
 const { ipcRenderer, shell } = require("electron");
 const {
-    existsSync,
-    readJSONSync,
-    readdirSync,
-    emptyDirSync,
-    readFileSync,
-    copyFile,
-    createReadStream,
-    createWriteStream,
-    mkdirSync,
-    writeFileSync,
+	existsSync,
+	readJSONSync,
+	readdirSync,
+	emptyDirSync,
+	readFileSync,
+	copyFile,
+	createReadStream,
+	createWriteStream,
+	mkdirSync,
+	writeFileSync,
 } = require("fs-extra");
 const { decompress, createDecompressor } = require("lzma-native");
 const wait = require("util").promisify(setTimeout);
 
 class GlobalPreload {
-    /**
-     * preloads that should be  e v e r y w h e r e
-     */
-    constructor() {
-        if (
-            !window.location.href.includes("onboarding") &&
-            !window.location.href.includes("init")
-        )
-            this.injectHeader();
-        this.injectModals();
-        this.localizeInnerText();
-        this.setupDefaultSettingValuesIfNeeded();
-        ipcRenderer.invoke("appDataReq", []).then((res) => {
-            this.appData = res;
-            this.dealWithTheAnnoyingLaunchButton();
-        });
-    }
+	/**
+	 * preloads that should be  e v e r y w h e r e
+	 */
+	constructor() {
+		if (
+			!window.location.href.includes("onboarding") &&
+			!window.location.href.includes("init")
+		)
+			this.injectHeader();
+		this.injectModals();
+		this.localizeInnerText();
+		this.setupDefaultSettingValuesIfNeeded();
+		ipcRenderer.invoke("appDataReq", []).then((res) => {
+			this.appData = res;
+			this.dealWithTheAnnoyingLaunchButton();
+		});
+	}
 
-    /**
-     * Injects the header into the `body`.
-     */
-    async injectHeader() {
-        const headerPages = [
-            ["Mods", "header.mods", "fa-puzzle-piece", "mods.html"],
-            //["Levels", "header.levels", "fa-ruler-combined", "levels.html"],
-            ["Upload", "header.upload", "fa-upload", "upload.html"],
-            //["Browse", "header.browse", "fa-search", "browse.html"],
-            ["Tools", "header.tools", "fa-wrench", "tools.html"],
-            ["Settings", "header.settings", "fa-cog", "settings.html"],
-        ];
-        let headerPageString = "";
+	/**
+	 * Injects the header into the `body`.
+	 */
+	async injectHeader() {
+		const headerPages = [
+			["Mods", "header.mods", "fa-puzzle-piece", "mods.html"],
+			//["Levels", "header.levels", "fa-ruler-combined", "levels.html"],
+			["Upload", "header.upload", "fa-upload", "upload.html"],
+			//["Browse", "header.browse", "fa-search", "browse.html"],
+			["Tools", "header.tools", "fa-wrench", "tools.html"],
+			["Settings", "header.settings", "fa-cog", "settings.html"],
+		];
+		let headerPageString = "";
 
-        for (let index = 0; index < headerPages.length; index++) {
-            const page = headerPages[index];
-            headerPageString += `<a class="nav-link${
-                window.location.href.includes(page[3])
-                    ? ' active" aria-current="page"'
-                    : '"'
-            } href="${page[3]}" ><i class="fas ${
-                page[2]
-            }"></i> <blank wys-localizationkey="${page[1]}">${
-                page[0]
-            }</blank></a>`;
-        }
+		for (let index = 0; index < headerPages.length; index++) {
+			const page = headerPages[index];
+			headerPageString += `<a class="nav-link${
+				window.location.href.includes(page[3])
+					? ' active" aria-current="page"'
+					: '"'
+			} href="${page[3]}" ><i class="fas ${
+				page[2]
+			}"></i> <blank wys-localizationkey="${page[1]}">${page[0]}</blank></a>`;
+		}
 
-        document.body.innerHTML = `
+		document.body.innerHTML = `
         </div>      
         <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -98,234 +96,243 @@ class GlobalPreload {
       </div><p></p></div> -->
     </nav>
     <br />${document.body.innerHTML}`;
-    }
+	}
 
-    injectModals() {
-        const modals = [
-            {
-                id: "cannotLaunchDueToMisconfiguration",
-                label: "Cannot launch Will You Snail",
-                body: "Misconfigured mods were found. Please fix or remove them before launching.",
-                footer: "",
-                hasCloseIcon: true,
-            },
-        ];
+	injectModals() {
+		const modals = [
+			{
+				id: "cannotLaunchDueToMisconfiguration",
+				label: "Cannot launch Will You Snail",
+				body: "Misconfigured mods were found. Please fix or remove them before launching.",
+				footer: "",
+				hasCloseIcon: true,
+			},
+		];
 
-        for (let index = 0; index < modals.length; index++) {
-            const modal = modals[index];
+		for (let index = 0; index < modals.length; index++) {
+			const modal = modals[index];
 
-            document.body.innerHTML += `<div class="modal fade" id="${
-                modal.id
-            }" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="${
-                modal.id
-            }Label" aria-hidden="true">
+			document.body.innerHTML += `<div class="modal fade" id="${
+				modal.id
+			}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="${
+				modal.id
+			}Label" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title" id="${
-                modal.id
-            }Label">Modal title</h5>${
-                modal.hasCloseIcon
-                    ? '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
-                    : ""
-            }</div>
+							modal.id
+						}Label">Modal title</h5>${
+				modal.hasCloseIcon
+					? '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>'
+					: ""
+			}</div>
             <div class="modal-body">${modal.body}</div>
             <div class="modal-footer">${modal.footer}</div>
           </div>
         </div>
       </div>`;
-        }
-    }
+		}
+	}
 
-    localizeInnerText() {
-        const nodesToLocalize = document.querySelectorAll(
-            "[wys-localizationkey]"
-        );
+	localizeInnerText() {
+		const nodesToLocalize = document.querySelectorAll("[wys-localizationkey]");
 
-        if (
-            !existsSync(
-                `${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
-                    "localization"
-                )}.json`
-            )
-        )
-            return console.error(
-                `Localization file for ${window.localStorage.getItem(
-                    "localization"
-                )} not found`
-            );
+		if (
+			!existsSync(
+				`${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
+					"localization"
+				)}.json`
+			)
+		)
+			return console.error(
+				`Localization file for ${window.localStorage.getItem(
+					"localization"
+				)} not found`
+			);
 
-        const languageFile = readJSONSync(
-            `${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
-                "localization"
-            )}.json`
-        );
+		const languageFile = readJSONSync(
+			`${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
+				"localization"
+			)}.json`
+		);
 
-        for (let index = 0; index < nodesToLocalize.length; index++) {
-            const node = nodesToLocalize[index];
+		for (let index = 0; index < nodesToLocalize.length; index++) {
+			const node = nodesToLocalize[index];
 
-            if (!languageFile[node.getAttribute("wys-localizationkey")])
-                continue;
+			if (!languageFile[node.getAttribute("wys-localizationkey")]) continue;
 
-            node.innerHTML =
-                languageFile[node.getAttribute("wys-localizationkey")];
-        }
+			node.innerHTML = languageFile[node.getAttribute("wys-localizationkey")];
+		}
 
-        document.title = languageFile["window.title"];
-    }
+		document.title = languageFile["window.title"];
+	}
 
-    setupDefaultSettingValuesIfNeeded() {
-        window.localStorage.getItem("");
-    }
+	setupDefaultSettingValuesIfNeeded() {
+		window.localStorage.getItem("");
+	}
 
-    dealWithTheAnnoyingLaunchButton() {
-        const launchButton = document.getElementById("launchButton");
+	dealWithTheAnnoyingLaunchButton() {
+		const launchButton = document.getElementById("launchButton");
 
-        launchButton.addEventListener("click", async () => {
-            launchButton.disabled = true;
-            launchButton.innerHTML =
-                '<i class="fas fa-spinner fa-pulse"></i> Getting ready...';
+		launchButton.addEventListener("click", async () => {
+			launchButton.disabled = true;
+			launchButton.innerHTML =
+				'<i class="fas fa-spinner fa-pulse"></i> Getting ready...';
 
-            document.getElementsByClassName(
-                "navbar-toggler"
-            )[0].disabled = true;
-            document.getElementsByClassName("navbar-nav")[0].hidden = true;
-            document.getElementsByClassName("navbar-brand")[0].href = "#";
+			document.getElementsByClassName("navbar-toggler")[0].disabled = true;
+			document.getElementsByClassName("navbar-nav")[0].hidden = true;
+			document.getElementsByClassName("navbar-brand")[0].href = "#";
 
-            const modList = readdirSync(`${this.appData}\\Mod Info`);
+			const modList = readdirSync(`${this.appData}\\Mod Info`);
 
-            emptyDirSync(
-                `${window.localStorage.getItem("gameDir")}\\gmml\\mods`
-            );
+			emptyDirSync(`${window.localStorage.getItem("gameDir")}\\gmml\\mods`);
 
-            var totalMods = modList.length;
-            var proccessedMods = 0;
+			var totalMods = modList.length;
+			var proccessedMods = 0;
 
-            for (let index = 0; index < modList.length; index++) {
-                const mod = modList[index];
+			for (let index = 0; index < modList.length; index++) {
+				const mod = modList[index];
 
-                if (
-                    !readJSONSync(`${this.appData}\\Mod Info\\${mod}`).enabled
-                ) {
-                    console.log("Mod is disabled, skipping");
-                    totalMods -= 1;
-                    continue;
-                }
+				console.debug(readJSONSync(`${this.appData}\\Mod Info\\${mod}`));
 
-                try {
-                    console.log(
-                        `Processing mod ${index + 1}/${modList.length}`
-                    );
-                    launchButton.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Processing mod ${
-                        index + 1
-                    }/${modList.length}`;
+				if (!readJSONSync(`${this.appData}\\Mod Info\\${mod}`).enabled) {
+					console.log(`Mod ${mod} is disabled, skipping`);
+					totalMods -= 1;
+					continue;
+				}
 
-                    const modFile = readFileSync(
-                        `${this.appData}\\Mod Binaries\\${mod}`
-                    );
+				try {
+					console.log(`Processing mod ${mod} ${index + 1}/${modList.length}`);
+					launchButton.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Processing mod ${mod} ${
+						index + 1
+					}/${modList.length}`;
 
-                    mkdirSync(
-                        `${window.localStorage.getItem(
-                            "gameDir"
-                        )}\\gmml\\mods\\${mod}`
-                    );
+					const modFile = readFileSync(`${this.appData}\\Mod Binaries\\${mod}`);
 
-                    if (modFile.slice(0, 2).toString("utf8") === "MZ") {
-                        console.log("Mod is DLL");
-                        copyFile(
-                            `${this.appData}\\Mod Binaries\\${mod}`,
-                            `${window.localStorage.getItem(
-                                "gameDir"
-                            )}\\gmml\\mods\\${mod}\\${mod}.dll`
-                        );
-                    } else {
-                        const decompressor = createDecompressor();
-                        const input = createReadStream(
-                            `${this.appData}\\Mod Binaries\\${mod}`
-                        );
-                        const output = createWriteStream(
-                            `${window.localStorage.getItem(
-                                "gameDir"
-                            )}\\gmml\\mods\\${mod}\\${mod}.dll`
-                        );
+					mkdirSync(
+						`${window.localStorage.getItem("gameDir")}\\gmml\\mods\\${mod}`
+					);
 
-                        input.pipe(decompressor).pipe(output);
-                    }
+					if (modFile.slice(0, 2).toString("utf8") === "MZ") {
+						console.debug(`Using DLL load sequence`);
+						console.debug(
+							`${
+								this.appData
+							}\\Mod Binaries\\${mod} -> ${window.localStorage.getItem(
+								"gameDir"
+							)}\\gmml\\mods\\${mod}\\${mod}.dll`
+						);
+						copyFile(
+							`${this.appData}\\Mod Binaries\\${mod}`,
+							`${window.localStorage.getItem(
+								"gameDir"
+							)}\\gmml\\mods\\${mod}\\${mod}.dll`
+						);
+					} else {
+						const decompressor = createDecompressor();
+						const input = createReadStream(
+							`${this.appData}\\Mod Binaries\\${mod}`
+						);
+						const output = createWriteStream(
+							`${window.localStorage.getItem(
+								"gameDir"
+							)}\\gmml\\mods\\${mod}\\${mod}.dll`
+						);
 
-                    copyFile(
-                        `${this.appData}\\Mod Info\\${mod}`,
-                        `${window.localStorage.getItem(
-                            "gameDir"
-                        )}\\gmml\\mods\\${mod}\\metadata.json`
-                    );
+						input.pipe(decompressor).pipe(output);
+					}
 
-                    if (existsSync(`${this.appData}\\Mod Debuggers\\${mod}`)) {
-                        copyFile(
-                            `${this.appData}\\Mod Debuggers\\${mod}`,
-                            `${window.localStorage.getItem(
-                                "gameDir"
-                            )}\\gmml\\mods\\${mod}\\${mod}.pdb`
-                        );
-                    }
+					copyFile(
+						`${this.appData}\\Mod Info\\${mod}`,
+						`${window.localStorage.getItem(
+							"gameDir"
+						)}\\gmml\\mods\\${mod}\\metadata.json`
+					);
+					console.debug(
+						`${this.appData}\\Mod Info\\${mod} -> ${window.localStorage.getItem(
+							"gameDir"
+						)}\\gmml\\mods\\${mod}\\metadata.json`
+					);
 
-                    proccessedMods++;
-                } catch (err) {
-                    console.error(`Failed to process ${mod}`);
-                    console.error(err);
-                }
-            }
+					if (existsSync(`${this.appData}\\Mod Debuggers\\${mod}`)) {
+						copyFile(
+							`${this.appData}\\Mod Debuggers\\${mod}`,
+							`${window.localStorage.getItem(
+								"gameDir"
+							)}\\gmml\\mods\\${mod}\\${mod}.pdb`
+						);
+					}
+					console.debug(
+						`${
+							this.appData
+						}\\Mod Debuggers\\${mod} -> ${window.localStorage.getItem(
+							"gameDir"
+						)}\\gmml\\mods\\${mod}\\${mod}.pdb`
+					);
 
-            launchButton.innerHTML =
-                '<i class="fas fa-spinner fa-pulse"></i> Applying GMML config...';
+					proccessedMods++;
+					console.log(`Successfully processed ${mod}`);
+				} catch (err) {
+					console.error(`Failed to process ${mod}`);
+					console.error(err);
+				}
+			}
 
-            var gmmlConfig = "";
-            if (window.localStorage.getItem("gmmlConsoleToggle") === "true")
-                gmmlConfig += "\nconsole";
-            if (window.localStorage.getItem("gmmlDebugToggle") === "true")
-                gmmlConfig += "\ndebug";
+			launchButton.innerHTML =
+				'<i class="fas fa-spinner fa-pulse"></i> Applying GMML config...';
 
-            writeFileSync(
-                `${window.localStorage.getItem("gameDir")}\\gmml.cfg`,
-                gmmlConfig.replace("\n", "")
-            );
+			var gmmlConfig = "";
+			if (window.localStorage.getItem("gmmlConsoleToggle") === "true")
+				gmmlConfig += "\nconsole";
+			if (window.localStorage.getItem("gmmlDebugToggle") === "true")
+				gmmlConfig += "\ndebug";
 
-            document.getElementsByClassName(
-                "navbar-toggler"
-            )[0].disabled = false;
-            document.getElementsByClassName("navbar-nav")[0].hidden = false;
-            document.getElementsByClassName("navbar-brand")[0].href =
-                "mods.html";
+			console.debug("New GMML Config:");
+			console.debug(gmmlConfig);
+			console.debug(
+				`Writing to ${window.localStorage.getItem("gameDir")}\\gmml.cfg`
+			);
 
-            if (proccessedMods / totalMods === 1)
-                launchButton.className = "btn btn-success";
-            if (
-                proccessedMods / totalMods < 1 &&
-                proccessedMods / totalMods > 0
-            )
-                launchButton.className = "btn btn-warning";
-            if (proccessedMods / totalMods === 0)
-                launchButton.className = "btn btn-danger";
+			writeFileSync(
+				`${window.localStorage.getItem("gameDir")}\\gmml.cfg`,
+				gmmlConfig.replace("\n", "")
+			);
 
-            launchButton.innerHTML = `Successfully processed ${Math.round(
-                (proccessedMods / totalMods) * 100
-            )}% of installed mods`;
-            if (totalMods === 0)
-                launchButton.innerHTML = `No mods found - launching without any mods`;
+			document.getElementsByClassName("navbar-toggler")[0].disabled = false;
+			document.getElementsByClassName("navbar-nav")[0].hidden = false;
+			document.getElementsByClassName("navbar-brand")[0].href = "mods.html";
 
-            shell.openExternal("steam://launch/1115050");
+			if (proccessedMods / totalMods === 1)
+				launchButton.className = "btn btn-success";
+			if (proccessedMods / totalMods < 1 && proccessedMods / totalMods > 0)
+				launchButton.className = "btn btn-warning";
+			if (proccessedMods / totalMods === 0)
+				launchButton.className = "btn btn-danger";
 
-            setTimeout(() => {
-                launchButton.className = "btn btn-primary";
-                launchButton.disabled = false;
-                launchButton.innerHTML = `<i class="fas fa-play"></i> <blank wys-localizationkey="header.playbutton">${
-                    readJSONSync(
-                        `${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
-                            "localization"
-                        )}.json`
-                    )["header.playbutton"]
-                }</blank>`;
-            }, 5000);
-        });
-    }
+			console.log(`${Math.round((proccessedMods / totalMods) * 100)}% pass`);
+
+			launchButton.innerHTML = `Successfully processed ${Math.round(
+				(proccessedMods / totalMods) * 100
+			)}% of installed mods`;
+			if (totalMods === 0)
+				launchButton.innerHTML = `No mods found - launching without any mods`;
+
+			console.log("Starting game through Steam");
+			shell.openExternal("steam://launch/1115050");
+
+			setTimeout(() => {
+				launchButton.className = "btn btn-primary";
+				launchButton.disabled = false;
+				launchButton.innerHTML = `<i class="fas fa-play"></i> <blank wys-localizationkey="header.playbutton">${
+					readJSONSync(
+						`${__dirname}/../../JSON/Localization/${window.localStorage.getItem(
+							"localization"
+						)}.json`
+					)["header.playbutton"]
+				}</blank>`;
+			}, 5000);
+		});
+	}
 }
 
 module.exports = GlobalPreload;

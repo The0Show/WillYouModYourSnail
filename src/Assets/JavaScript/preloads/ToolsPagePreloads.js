@@ -23,7 +23,7 @@ class ToolsPagePreloads {
 			},
 			{
 				name: "Uninstall Modded Will You Snail",
-				desc: 'Clears the Will You Snail directory, reinstalls the game, and clears the "gameDir" setting. Your save files will remain intact.',
+				desc: 'Clears the Will You Snail directory, reinstalls the game, and clears the "gameDir" setting. Your save files and mods will remain intact.',
 				callback: () => {
 					emptyDir(window.localStorage.getItem("gameDir"), () => {
 						window.location.href = "steam://validate/1115050";

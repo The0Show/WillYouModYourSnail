@@ -31,26 +31,12 @@ Will You Mod Your Snail **is not complete**. There are parts of it that need to 
 
 ## Building
 
-Building is simple, thanks to Electron Forge.
-
-After cloning the repo, install dependencies...
-
-```
-npm i
-```
-
-...and run the following command.
-
-```
-npm run make
-```
-
-That's it! If you're a power user, here's some one liners that you can paste into your shell to clone, install, build, and open the output folder in one go.
-
-```
-Command Prompt: git clone https://git.the0show.com/WillYouModYourSnail.git && cd WillYouModYourSnail && npm i && npm run make && explorer out
-Powershell: git clone https://git.the0show.com/WillYouModYourSnail.git; cd WillYouModYourSnail; npm i; npm run make; explorer out
-WSL: git clone https://git.the0show.com/WillYouModYourSnail.git && cd WillYouModYourSnail && npm i && npm run make && explorer.exe out
+```sh
+git clone https://git.the0show.com/WillYouModYourSnail.git # clone the repo
+cd WillYouModYourSnail # enter the project dir
+git submodule update --init --recursive # clone submodules
+npm i # install node deps
+npm run # view all npm run commands
 ```
 
 ## Manual Setup
@@ -84,9 +70,9 @@ Press <kbd>Ctrl</kbd> + <kbd>R</kbd>. This will restart the app instantly.
 >
 > This is one of the many shortcuts I've added into the app. Here's the rest of them:<br />
 >
-> -   <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Reloads the current page. Useful for testing changes to the page or it's preload scripts.
-> -   <kbd>F8</kbd> | Opens the issue reporter in your default browser.
-> -   <kbd>Shift</kbd> + <kbd>F8</kbd> | Opens your file browser, and highlights the current log file.
+> - <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> | Reloads the current page. Useful for testing changes to the page or it's preload scripts.
+> - <kbd>F8</kbd> | Opens the issue reporter in your default browser.
+> - <kbd>Shift</kbd> + <kbd>F8</kbd> | Opens your file browser, and highlights the current log file.
 
 If all goes well, you should be brought to the `Mods` page.
 
