@@ -101,41 +101,6 @@
 				alertPlaceholder.append(wrapper);
 			}
 
-			// async function handleFile(file) {
-			//     const data = await file.text();
-
-			//     if (file.name.endsWith(".wysmod")) {
-			//         try {
-			//             const jsondata = await JSON.parse(data);
-
-			//             if (!jsondata)
-			//                 return sendUploadResponse(
-			//                     "Invalid .wysmod file - it may be an unsupported version",
-			//                     "danger"
-			//                 );
-
-			//             sendUploadResponse(
-			//                 `${jsondata.modName} uploaded successfully! It will be added to your mod list after you sync.`,
-			//                 "success"
-			//             );
-			//         } catch {
-			//             return sendUploadResponse(
-			//                 "Invalid .wysmod file - it may be an unsupported version",
-			//                 "danger"
-			//             );
-			//         }
-			//     } else if (file.name.endsWith(".bps")) {
-			//         sendUploadResponse(
-			//             `Third-party mod ${file.name} uploaded successfully! It will be added to your mod list after you sync.`,
-			//             "warning"
-			//         );
-			//     } else
-			//         return sendUploadResponse(
-			//             "Unsupported filetype (.wysmod or .bps only)",
-			//             "danger"
-			//         );
-			// }
-
 			async function dropHandler(ev) {
 				// Prevent default behavior (Prevent file from being opened)
 				ev.preventDefault();
