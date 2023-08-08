@@ -17,6 +17,8 @@ class Logger {
 		string prefix;
 		Logger(string prefix){
 			this->prefix = prefix;
+
+			this->Log(INFO, "Logger initialized");
 		}
 
 		void Log(LogLevel level, string msg){
