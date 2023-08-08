@@ -1,5 +1,5 @@
 #include "classes/Logger.cpp"
-#include "../lib/raylib/src/raylib.h"
+#include "../lib/raylib-cpp/include/raylib-cpp.hpp"
 
 int main(){
 	Logger* logger = new Logger("Main Process");
@@ -11,18 +11,17 @@ int main(){
 	logger->Log(INFO, "No updates found!");
 	logger->Log(INFO, "Initializing window...");
 
-	InitWindow(400,400, "Will You Mod Your Snail");
+	raylib::Window window(400,400, "Will You Mod Your Snail");
 	SetTargetFPS(60);
 
-    while (!WindowShouldClose())
+    while (!window.ShouldClose())
     {
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        window.ClearBackground(RAYWHITE);
 
         EndDrawing();
     }
 
-    CloseWindow();
 	return 0;
 }
