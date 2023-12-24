@@ -1,7 +1,0 @@
-*.sln
-*.vcxproj
-*.filters
-CMakeCache.txt
-cmake_install.cmake
-CMakeFiles/
-bin/
