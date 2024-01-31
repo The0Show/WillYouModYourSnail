@@ -5,16 +5,13 @@ permissions:
   contents: read
 
 jobs:
-  DownloadGodot:
-    runs-on: ubuntu-latest
-    steps:
-      - run: wget https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_32.zip -O godot.zip
-      - run: unzip godot.zip
-      - run: rm godot.zip
-      - run: ls
   ExportProject:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - run: wget https://github.com/godotengine/godot/releases/download/4.2.1-stable/Godot_v4.2.1-stable_linux.x86_32.zip -O godot.zip
+      - run: unzip godot.zip
+      - run: rm godot.zip
       - run: ls
+      - run: ./Godot_v4.2.1-stable_linux.x86_32 --headless --path ./source/project.godot --export-release "Windows Desktop"
