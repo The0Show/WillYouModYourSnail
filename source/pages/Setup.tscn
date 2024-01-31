@@ -1,0 +1,147 @@
+[gd_scene load_steps=3 format=3 uid="uid://btofhg5tul80b"]
+
+[ext_resource type="Script" path="res://pages/Setup.gd" id="1_awfca"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nficc"]
+font_size = 32
+
+[node name="Setup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_awfca")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -47.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="BackButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "< Back"
+
+[node name="NextButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Next >"
+
+[node name="StepContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -423.0
+offset_top = -302.0
+offset_right = 423.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="IntroStep" type="VBoxContainer" parent="StepContainer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="StepContainer/IntroStep"]
+layout_mode = 2
+text = "Welcome to Will You Mod Your Snail"
+label_settings = SubResource("LabelSettings_nficc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Body" type="Label" parent="StepContainer/IntroStep"]
+layout_mode = 2
+text = "This setup process will help you get all set up. Press \"Next\" to continue."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LocateWYS" type="VBoxContainer" parent="StepContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="StepContainer/LocateWYS"]
+layout_mode = 2
+text = "Firstly, please locate your Will You Snail installation directory."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="StepContainer/LocateWYS"]
+layout_mode = 2
+alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="StepContainer/LocateWYS/HBoxContainer"]
+custom_minimum_size = Vector2(581.13, 0)
+layout_mode = 2
+placeholder_text = "C:/something/Will You Snail.exe"
+editable = false
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+shortcut_keys_enabled = false
+middle_mouse_paste_enabled = false
+deselect_on_focus_loss_enabled = false
+drag_and_drop_selection_enabled = false
+
+[node name="OpenFilePicker" type="Button" parent="StepContainer/LocateWYS/HBoxContainer"]
+layout_mode = 2
+text = "Open file picker"
+
+[node name="LocateWYSDialog" type="FileDialog" parent="StepContainer/LocateWYS"]
+title = "Open a File"
+size = Vector2i(335, 159)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("Will You Snail.exe")
+use_native_dialog = true
+
+[node name="FinishedStep" type="VBoxContainer" parent="StepContainer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Header" type="Label" parent="StepContainer/FinishedStep"]
+layout_mode = 2
+text = "Setup complete!"
+label_settings = SubResource("LabelSettings_nficc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Body" type="Label" parent="StepContainer/FinishedStep"]
+layout_mode = 2
+text = "You're all set! Use the button on the top-right to open the Mods view."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/NextButton" to="." method="_on_next_button_pressed"]
+[connection signal="visibility_changed" from="StepContainer/LocateWYS" to="." method="_on_locate_wys_visibility_changed"]
+[connection signal="pressed" from="StepContainer/LocateWYS/HBoxContainer/OpenFilePicker" to="." method="_on_open_file_picker_pressed"]
+[connection signal="file_selected" from="StepContainer/LocateWYS/LocateWYSDialog" to="." method="_on_locate_wys_dialog_file_selected"]
+[connection signal="visibility_changed" from="StepContainer/FinishedStep" to="." method="_on_finished_step_visibility_changed"]

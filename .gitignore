@@ -1,0 +1,4 @@
+/export
+
+# Godot 4+ specific ignores
+source/.godot/

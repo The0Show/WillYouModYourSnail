@@ -1,0 +1,46 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Will You Mod Your Snail"
+config/version="1.0.0"
+run/main_scene="res://Init.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="WYMYS"
+config/features=PackedStringArray("4.2", "GL Compatibility")
+run/low_processor_mode=true
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+config/icon="res://icon.svg"
+run/custom_user_dir_name="WYMYS"
+
+[autoload]
+
+Steam="*res://autoloads/Steam.gd"
+UserConfigFile="*res://autoloads/UserConfigFile.gd"
+UndertaleModLib="*res://autoloads/UndertaleModLib.gd"
+Globals="*res://autoloads/Globals.gd"
+
+[display]
+
+window/size/viewport_width=1000
+window/size/viewport_height=720
+window/size/resizable=false
+window/energy_saving/keep_screen_on=false
+window/subwindows/embed_subwindows=false
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

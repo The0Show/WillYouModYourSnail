@@ -1,0 +1,161 @@
+[gd_scene load_steps=7 format=3 uid="uid://d2ij1m348cjo4"]
+
+[ext_resource type="Texture2D" uid="uid://ckkdjdmao3x5o" path="res://image/WYSMC.png" id="1_g7hg0"]
+[ext_resource type="Script" path="res://Init.gd" id="1_m1jv6"]
+[ext_resource type="Texture2D" uid="uid://cj4kqh1ls70xy" path="res://image/outline_menu_white_18dp.png" id="3_b6da4"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7ere8"]
+texture = ExtResource("1_g7hg0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rynpu"]
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0.670588)
+
+[sub_resource type="LabelSettings" id="LabelSettings_krebb"]
+font_size = 26
+
+[node name="Init" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m1jv6")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 128
+visible = false
+
+[node name="Splash" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Logo" type="Panel" parent="CanvasLayer/Splash"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -128.0
+offset_right = 128.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_7ere8")
+
+[node name="Label" type="Label" parent="CanvasLayer/Splash"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -236.0
+offset_top = 109.0
+offset_right = 236.0
+offset_bottom = 132.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Loading..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/Splash/Label"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 30.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GlobalBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.00392157, 0.0666667, 1)
+
+[node name="PageTitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 36.0
+grow_horizontal = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_rynpu")
+text = "Squid's Presentation Room"
+label_settings = SubResource("LabelSettings_krebb")
+vertical_alignment = 1
+
+[node name="LaunchButton" type="Button" parent="PageTitle"]
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -217.0
+offset_top = 9.0
+offset_right = -45.0
+offset_bottom = -9.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "Launch Will You Snail"
+alignment = 2
+
+[node name="MenuButton" type="MenuButton" parent="PageTitle"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = 9.0
+offset_right = -8.0
+offset_bottom = -9.0
+grow_horizontal = 0
+grow_vertical = 2
+icon = ExtResource("3_b6da4")
+flat = false
+expand_icon = true
+switch_on_hover = true
+item_count = 7
+popup/item_0/text = "Mods"
+popup/item_0/id = 4
+popup/item_0/disabled = true
+popup/item_1/text = ""
+popup/item_1/id = 6
+popup/item_1/separator = true
+popup/item_2/text = "Help"
+popup/item_2/id = 0
+popup/item_3/text = "Reload Page"
+popup/item_3/id = 1
+popup/item_4/text = ""
+popup/item_4/id = 2
+popup/item_4/separator = true
+popup/item_5/text = "Relaunch"
+popup/item_5/id = 5
+popup/item_6/text = "Quit"
+popup/item_6/id = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 49.0
+grow_horizontal = 2
+grow_vertical = 2
